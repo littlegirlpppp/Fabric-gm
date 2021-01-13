@@ -8,8 +8,10 @@ package cluster
 
 import (
 	"bytes"
-	"crypto/tls"
-	"crypto/x509"
+	// "crypto/tls"
+	// "crypto/x509"
+	"github.com/jxu86/gmsm/sm2"
+	tls "github.com/jxu86/gmtls"
 	"encoding/hex"
 	"encoding/json"
 	"encoding/pem"
@@ -161,7 +163,7 @@ func (dialer *PredicateDialer) Dial(address string, verifyFunc RemoteVerifier) (
 		serverRootCAs := dialer.Config.Clone().SecOpts.ServerRootCAs
 		dialer.lock.RUnlock()
 
-		tlsConfig.RootCAs = x509.NewCertPool()
+		tlsConfig.RootCAs = sm2.NewCertPool()
 		for _, pem := range serverRootCAs {
 			tlsConfig.RootCAs.AppendCertsFromPEM(pem)
 		}
@@ -402,7 +404,7 @@ func (ep EndpointCriteria) String() string {
 			if bl == nil {
 				break
 			}
-			cert, err := x509.ParseCertificate(bl.Bytes)
+			cert, err := sm2.ParseCertificate(bl.Bytes)
 			if err != nil {
 				break
 			}

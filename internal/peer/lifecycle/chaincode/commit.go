@@ -8,7 +8,8 @@ package chaincode
 
 import (
 	"context"
-	"crypto/tls"
+	// "crypto/tls"
+	tls "github.com/jxu86/gmtls"
 	"time"
 
 	"github.com/golang/protobuf/proto"

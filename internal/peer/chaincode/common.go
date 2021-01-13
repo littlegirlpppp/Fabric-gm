@@ -8,7 +8,8 @@ package chaincode
 
 import (
 	"context"
-	"crypto/tls"
+	// "crypto/tls"
+	tls "github.com/jxu86/gmtls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -17,7 +18,7 @@ import (
 	"sync"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/hyperledger/fabric-chaincode-go/shim"
+	"github.com/jxu86/fabric-chaincode-go/shim"
 	pcommon "github.com/hyperledger/fabric-protos-go/common"
 	ab "github.com/hyperledger/fabric-protos-go/orderer"
 	pb "github.com/hyperledger/fabric-protos-go/peer"
@@ -693,13 +694,9 @@ func NewDeliverGroup(
 ) *DeliverGroup {
 	clients := make([]*DeliverClient, len(deliverClients))
 	for i, client := range deliverClients {
-		address := peerAddresses[i]
-		if address == "" {
-			address = viper.GetString("peer.address")
-		}
 		dc := &DeliverClient{
 			Client:  client,
-			Address: address,
+			Address: peerAddresses[i],
 		}
 		clients[i] = dc
 	}

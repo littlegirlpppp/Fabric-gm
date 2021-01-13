@@ -43,7 +43,7 @@ Note that when using the contract api, each chaincode function that is called is
 you can get the chaincode stub (GetStub() ), which has functions to access the ledger (e.g. GetState() ) and make requests
 to update the ledger (e.g. PutState() ). You can learn more at the language-specific links below.
 
-  - `Go <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#Chaincode>`__
+  - `Go <https://godoc.org/github.com/jxu86/fabric-chaincode-go/shim#Chaincode>`__
   - `Node.js <https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeInterface.html>`__
   - `Java <https://hyperledger.github.io/fabric-chaincode-java/{BRANCH}/api/org/hyperledger/fabric/shim/Chaincode.html>`__
 

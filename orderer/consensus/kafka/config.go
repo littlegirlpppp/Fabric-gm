@@ -7,12 +7,14 @@ SPDX-License-Identifier: Apache-2.0
 package kafka
 
 import (
-	"crypto/tls"
-	"crypto/x509"
-
+	// "crypto/tls"
+	// "crypto/x509"
+	"github.com/jxu86/sarama"
 	localconfig "github.com/hyperledger/fabric/orderer/common/localconfig"
+	"github.com/jxu86/gmsm/sm2"
+	tls "github.com/jxu86/gmtls"
 
-	"github.com/Shopify/sarama"
+	
 )
 
 func newBrokerConfig(
@@ -47,7 +49,7 @@ func newBrokerConfig(
 			logger.Panic("Unable to decode public/private key pair:", err)
 		}
 		// create root CA pool
-		rootCAs := x509.NewCertPool()
+		rootCAs := sm2.NewCertPool()
 		for _, certificate := range tlsConfig.RootCAs {
 			if !rootCAs.AppendCertsFromPEM([]byte(certificate)) {
 				logger.Panic("Unable to parse the root certificate authority certificates (Kafka.Tls.RootCAs)")
@@ -81,7 +83,7 @@ func newBrokerConfig(
 	// the message before sending back an ACK to the sender.
 	brokerConfig.Producer.RequiredAcks = sarama.WaitForAll
 	// An esoteric setting required by the sarama library, see:
-	// https://github.com/Shopify/sarama/issues/816
+	// https://github.com/jxu86/sarama/issues/816
 	brokerConfig.Producer.Return.Successes = true
 
 	brokerConfig.Version = kafkaVersion

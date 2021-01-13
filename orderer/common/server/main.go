@@ -76,7 +76,7 @@ func Main() {
 		fmt.Println(metadata.GetVersionInfo())
 		return
 	}
-
+	
 	conf, err := localconfig.Load()
 	if err != nil {
 		logger.Error("failed to parse config: ", err)
@@ -685,11 +685,11 @@ func loadLocalMSP(conf *localconfig.TopLevel) msp.MSP {
 	if err != nil {
 		logger.Panicf("Failed to load local MSP: %v", err)
 	}
-
+	
 	if err = localmsp.Setup(mspConfig); err != nil {
 		logger.Panicf("Failed to setup local msp with config: %v", err)
 	}
-
+	
 	return localmsp
 }
 

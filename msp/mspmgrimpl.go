@@ -60,7 +60,7 @@ func (mgr *mspManagerImpl) Setup(msps []MSP) error {
 	}
 
 	mgr.up = true
-
+	
 	mspLogger.Debugf("MSP manager setup complete, setup %d msps", len(msps))
 
 	return nil

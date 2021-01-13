@@ -377,7 +377,7 @@ func BlockPullerFromConfigBlock(conf PullerConfig, block *common.Block, verifier
 	dialer := &StandardDialer{
 		Config: clientConf.Clone(),
 	}
-
+	
 	tlsCertAsDER, _ := pem.Decode(conf.TLSCert)
 	if tlsCertAsDER == nil {
 		return nil, errors.Errorf("unable to decode TLS certificate PEM: %s", base64.StdEncoding.EncodeToString(conf.TLSCert))

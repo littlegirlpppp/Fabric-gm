@@ -17,8 +17,8 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/hyperledger/fabric-chaincode-go/shim"
-	"github.com/hyperledger/fabric-chaincode-go/shimtest"
+	"github.com/jxu86/fabric-chaincode-go/shim"
+	"github.com/jxu86/fabric-chaincode-go/shimtest"
 	"github.com/hyperledger/fabric-protos-go/common"
 	"github.com/hyperledger/fabric-protos-go/ledger/queryresult"
 	mb "github.com/hyperledger/fabric-protos-go/msp"

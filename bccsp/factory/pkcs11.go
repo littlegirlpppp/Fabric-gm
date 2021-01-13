@@ -42,7 +42,9 @@ func initFactories(config *FactoryOpts) error {
 	}
 
 	if config.ProviderName == "" {
-		config.ProviderName = "SW"
+		// config.ProviderName = "SW"
+		// 默认国密
+		config.ProviderName = "GM"
 	}
 
 	if config.SwOpts == nil {
@@ -50,8 +52,16 @@ func initFactories(config *FactoryOpts) error {
 	}
 
 	// Software-Based BCCSP
+	// if config.ProviderName == "SW" && config.SwOpts != nil {
 	if config.ProviderName == "SW" && config.SwOpts != nil {
-		f := &SWFactory{}
+		// f := &SWFactory{}
+		var f BCCSPFactory
+		switch config.ProviderName {
+		case "GM":
+			f = &GMFactory{}
+		case "SW":
+			f = &SWFactory{}
+		}
 		var err error
 		defaultBCCSP, err = initBCCSP(f, config)
 		if err != nil {
@@ -80,6 +90,8 @@ func initFactories(config *FactoryOpts) error {
 func GetBCCSPFromOpts(config *FactoryOpts) (bccsp.BCCSP, error) {
 	var f BCCSPFactory
 	switch config.ProviderName {
+	case "GM":
+		f = &GMFactory{}
 	case "SW":
 		f = &SWFactory{}
 	case "PKCS11":

@@ -20,7 +20,8 @@ SPDX-License-Identifier: Apache-2.0
 package peer
 
 import (
-	"crypto/tls"
+	// "crypto/tls"
+	tls "github.com/jxu86/gmtls"
 	"fmt"
 	"io/ioutil"
 	"net"

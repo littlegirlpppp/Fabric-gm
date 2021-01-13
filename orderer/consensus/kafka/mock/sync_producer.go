@@ -4,7 +4,7 @@ package mock
 import (
 	"sync"
 
-	"github.com/Shopify/sarama"
+	"github.com/jxu86/sarama"
 )
 
 type SyncProducer struct {

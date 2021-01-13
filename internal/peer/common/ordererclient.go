@@ -7,7 +7,8 @@ package common
 
 import (
 	"context"
-	"crypto/tls"
+	// "crypto/tls"
+	tls "github.com/jxu86/gmtls"
 
 	ab "github.com/hyperledger/fabric-protos-go/orderer"
 	"github.com/hyperledger/fabric/internal/pkg/comm"

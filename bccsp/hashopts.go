@@ -18,6 +18,16 @@ package bccsp
 
 import "fmt"
 
+// 国密：增加 sm3
+// GMSM3Opts 国密 SM3.
+type GMSM3Opts struct {
+}
+
+// Algorithm 国密 sm3 算法
+func (opts *GMSM3Opts) Algorithm() string {
+	return GMSM3
+}
+
 // SHA256Opts contains options relating to SHA-256.
 type SHA256Opts struct {
 }
@@ -65,6 +75,8 @@ func GetHashOpt(hashFunction string) (HashOpts, error) {
 		return &SHA3_256Opts{}, nil
 	case SHA3_384:
 		return &SHA3_384Opts{}, nil
+	case GMSM3:
+		return &GMSM3Opts{}, nil
 	}
 	return nil, fmt.Errorf("hash function not recognized [%s]", hashFunction)
 }

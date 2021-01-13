@@ -287,7 +287,7 @@ func (dc *InactiveChainReplicator) Run() {
 	for {
 		select {
 		case <-dc.scheduleChan:
-			dc.replicateDisabledChains()
+			dc.replicateDisabledChains() 
 		case <-dc.quitChan:
 			return
 		}

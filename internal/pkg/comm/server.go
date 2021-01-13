@@ -7,8 +7,10 @@ SPDX-License-Identifier: Apache-2.0
 package comm
 
 import (
-	"crypto/tls"
-	"crypto/x509"
+	// "crypto/tls"
+	// "crypto/x509"
+	"github.com/jxu86/gmsm/sm2"
+	tls "github.com/jxu86/gmtls"
 	"net"
 	"sync"
 	"sync/atomic"
@@ -107,7 +109,7 @@ func NewGRPCServerFromListener(listener net.Listener, serverConfig ServerConfig)
 				grpcServer.tls.config.ClientAuth = tls.RequireAndVerifyClientCert
 				//if we have client root CAs, create a certPool
 				if len(secureConfig.ClientRootCAs) > 0 {
-					grpcServer.tls.config.ClientCAs = x509.NewCertPool()
+					grpcServer.tls.config.ClientCAs = sm2.NewCertPool()
 					for _, clientRootCA := range secureConfig.ClientRootCAs {
 						err = grpcServer.appendClientRootCA(clientRootCA)
 						if err != nil {
@@ -251,7 +253,7 @@ func (gServer *GRPCServer) SetClientRootCAs(clientRoots [][]byte) error {
 	gServer.lock.Lock()
 	defer gServer.lock.Unlock()
 
-	certPool := x509.NewCertPool()
+	certPool := sm2.NewCertPool()
 
 	for _, clientRoot := range clientRoots {
 		certs, err := pemToX509Certs(clientRoot)

@@ -20,6 +20,8 @@ import (
 	"sync"
 
 	"github.com/hyperledger/fabric/bccsp"
+	"github.com/jxu86/gmsm/sm2"
+	"github.com/jxu86/gmsm/sm4"
 )
 
 // NewFileBasedKeyStore instantiated a file-based key store at a given position.
@@ -131,7 +133,8 @@ func (ks *fileBasedKeyStore) GetKey(ski []byte) (bccsp.Key, error) {
 			return nil, fmt.Errorf("failed loading key [%x] [%s]", ski, err)
 		}
 
-		return &aesPrivateKey{key, false}, nil
+		// return &aesPrivateKey{key, false}, nil
+		return &gmsm4PrivateKey{key, false}, nil
 	case "sk":
 		// Load the private key
 		key, err := ks.loadPrivateKey(hex.EncodeToString(ski))
@@ -140,6 +143,8 @@ func (ks *fileBasedKeyStore) GetKey(ski []byte) (bccsp.Key, error) {
 		}
 
 		switch k := key.(type) {
+		case *sm2.PrivateKey:
+			return &gmsm2PrivateKey{key.(*sm2.PrivateKey)}, nil
 		case *ecdsa.PrivateKey:
 			return &ecdsaPrivateKey{k}, nil
 		default:
@@ -153,6 +158,8 @@ func (ks *fileBasedKeyStore) GetKey(ski []byte) (bccsp.Key, error) {
 		}
 
 		switch k := key.(type) {
+		case *sm2.PublicKey:
+			return &gmsm2PublicKey{key.(*sm2.PublicKey)}, nil
 		case *ecdsa.PublicKey:
 			return &ecdsaPublicKey{k}, nil
 		default:
@@ -174,6 +181,30 @@ func (ks *fileBasedKeyStore) StoreKey(k bccsp.Key) (err error) {
 		return errors.New("invalid key. It must be different from nil")
 	}
 	switch kk := k.(type) {
+	case *gmsm2PrivateKey:
+		// kk := k.(*gmsm2PrivateKey)
+
+		err = ks.storePrivateKey(hex.EncodeToString(k.SKI()), kk.privKey)
+		if err != nil {
+			return fmt.Errorf("Failed storing GMSM2 private key [%s]", err)
+		}
+
+	case *gmsm2PublicKey:
+		// kk := k.(*gmsm2PublicKey)
+
+		err = ks.storePublicKey(hex.EncodeToString(k.SKI()), kk.pubKey)
+		if err != nil {
+			return fmt.Errorf("Failed storing GMSM2 public key [%s]", err)
+		}
+	case *gmsm4PrivateKey:
+		// kk := k.(*gmsm4PrivateKey)
+
+		// keypath := ks.getPathForAlias(hex.EncodeToString(k.SKI()), "key")
+
+		err = ks.storeKey(hex.EncodeToString(k.SKI()), kk.privKey)
+		if err != nil {
+			return fmt.Errorf("Failed storing GMSM4 key [%s]", err)
+		}
 	case *ecdsaPrivateKey:
 		err = ks.storePrivateKey(hex.EncodeToString(k.SKI()), kk.privKey)
 		if err != nil {
@@ -222,6 +253,8 @@ func (ks *fileBasedKeyStore) searchKeystoreForSKI(ski []byte) (k bccsp.Key, err 
 		}
 
 		switch kk := key.(type) {
+		case *sm2.PrivateKey:
+			k = &gmsm2PrivateKey{key.(*sm2.PrivateKey)}
 		case *ecdsa.PrivateKey:
 			k = &ecdsaPrivateKey{kk}
 		default:
@@ -289,7 +322,11 @@ func (ks *fileBasedKeyStore) storePublicKey(alias string, publicKey interface{})
 }
 
 func (ks *fileBasedKeyStore) storeKey(alias string, key []byte) error {
-	pem, err := aesToEncryptedPEM(key, ks.pwd)
+	// pem, err := aesToEncryptedPEM(key, ks.pwd)
+	if len(ks.pwd) == 0 {
+		ks.pwd = nil
+	}
+	pem, err := sm4.WriteKeytoMem(key, ks.pwd)
 	if err != nil {
 		logger.Errorf("Failed converting key to PEM [%s]: [%s]", alias, err)
 		return err
@@ -315,7 +352,9 @@ func (ks *fileBasedKeyStore) loadPrivateKey(alias string) (interface{}, error) {
 		return nil, err
 	}
 
-	privateKey, err := pemToPrivateKey(raw, ks.pwd)
+	// privateKey, err := pemToPrivateKey(raw, ks.pwd)
+	ks.pwd = nil
+	privateKey, err := sm2.ReadPrivateKeyFromMem(raw, ks.pwd)
 	if err != nil {
 		logger.Errorf("Failed parsing private key [%s]: [%s].", alias, err.Error())
 
@@ -336,7 +375,8 @@ func (ks *fileBasedKeyStore) loadPublicKey(alias string) (interface{}, error) {
 		return nil, err
 	}
 
-	privateKey, err := pemToPublicKey(raw, ks.pwd)
+	// privateKey, err := pemToPublicKey(raw, ks.pwd)
+	privateKey, err := sm2.ReadPublicKeyFromMem(raw, nil)
 	if err != nil {
 		logger.Errorf("Failed parsing private key [%s]: [%s].", alias, err.Error())
 
@@ -357,7 +397,11 @@ func (ks *fileBasedKeyStore) loadKey(alias string) ([]byte, error) {
 		return nil, err
 	}
 
-	key, err := pemToAES(pem, ks.pwd)
+	// key, err := pemToAES(pem, ks.pwd)
+	if len(ks.pwd) == 0 {
+		ks.pwd = nil
+	}
+	key, err := sm4.ReadKeyFromMem(pem, ks.pwd)
 	if err != nil {
 		logger.Errorf("Failed parsing key [%s]: [%s]", alias, err)
 

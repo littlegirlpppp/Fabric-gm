@@ -13,7 +13,9 @@ import (
 
 	"github.com/hyperledger/fabric/common/crypto/tlsgen"
 	"github.com/hyperledger/fabric/common/util"
-	"google.golang.org/grpc/credentials"
+
+	// "google.golang.org/grpc/credentials"
+	credentials "github.com/jxu86/gmtls/gmcredentials"
 	"google.golang.org/grpc/peer"
 )
 

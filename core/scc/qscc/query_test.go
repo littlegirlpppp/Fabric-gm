@@ -12,8 +12,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hyperledger/fabric-chaincode-go/shim"
-	"github.com/hyperledger/fabric-chaincode-go/shimtest"
+	"github.com/jxu86/fabric-chaincode-go/shim"
+	"github.com/jxu86/fabric-chaincode-go/shimtest"
 	"github.com/hyperledger/fabric-protos-go/common"
 	peer2 "github.com/hyperledger/fabric-protos-go/peer"
 	"github.com/hyperledger/fabric/bccsp/sw"

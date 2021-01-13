@@ -7,14 +7,18 @@ package msp
 
 import (
 	"crypto/x509"
+	"encoding/hex"
 	"encoding/pem"
+	"fmt"
 	"os"
 	"path/filepath"
 
+	"github.com/hyperledger/fabric/bccsp"
 	"github.com/hyperledger/fabric/internal/cryptogen/ca"
 	"github.com/hyperledger/fabric/internal/cryptogen/csp"
 	fabricmsp "github.com/hyperledger/fabric/msp"
 	"github.com/pkg/errors"
+	"github.com/jxu86/gmsm/sm2"
 	"gopkg.in/yaml.v2"
 )
 
@@ -71,6 +75,7 @@ func GenerateLocalMSP(
 
 	// generate private key
 	priv, err := csp.GeneratePrivateKey(keystore)
+	sm2PubKey, err := csp.GetSM2PublicKey(priv)
 	if err != nil {
 		return err
 	}
@@ -85,7 +90,8 @@ func GenerateLocalMSP(
 		name,
 		ous,
 		nil,
-		&priv.PublicKey,
+		// &priv.PublicKey,
+		sm2PubKey,
 		x509.KeyUsageDigitalSignature,
 		[]x509.ExtKeyUsage{},
 	)
@@ -98,7 +104,8 @@ func GenerateLocalMSP(
 	// the signing CA certificate goes into cacerts
 	err = x509Export(
 		filepath.Join(mspDir, "cacerts", x509Filename(signCA.Name)),
-		signCA.SignCert,
+		signCA.SignSm2Cert,
+		// signCA.SignCert,
 	)
 	if err != nil {
 		return err
@@ -106,12 +113,12 @@ func GenerateLocalMSP(
 	// the TLS CA certificate goes into tlscacerts
 	err = x509Export(
 		filepath.Join(mspDir, "tlscacerts", x509Filename(tlsCA.Name)),
-		tlsCA.SignCert,
+		tlsCA.SignSm2Cert,
+		// tlsCA.SignCert,
 	)
 	if err != nil {
 		return err
 	}
-
 	// generate config.yaml if required
 	if nodeOUs {
 
@@ -138,6 +145,7 @@ func GenerateLocalMSP(
 
 	// generate private key
 	tlsPrivKey, err := csp.GeneratePrivateKey(tlsDir)
+	tlsPubKey, err := csp.GetSM2PublicKey(tlsPrivKey)
 	if err != nil {
 		return err
 	}
@@ -148,7 +156,8 @@ func GenerateLocalMSP(
 		name,
 		nil,
 		sans,
-		&tlsPrivKey.PublicKey,
+		// &tlsPrivKey.PublicKey,
+		tlsPubKey,
 		x509.KeyUsageDigitalSignature|x509.KeyUsageKeyEncipherment,
 		[]x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth,
 			x509.ExtKeyUsageClientAuth},
@@ -156,7 +165,9 @@ func GenerateLocalMSP(
 	if err != nil {
 		return err
 	}
-	err = x509Export(filepath.Join(tlsDir, "ca.crt"), tlsCA.SignCert)
+
+	// err = x509Export(filepath.Join(tlsDir, "ca.crt"), tlsCA.SignCert)
+	err = x509Export(filepath.Join(tlsDir, "ca.crt"), tlsCA.SignSm2Cert)
 	if err != nil {
 		return err
 	}
@@ -171,8 +182,9 @@ func GenerateLocalMSP(
 	if err != nil {
 		return err
 	}
-
-	err = keyExport(tlsDir, filepath.Join(tlsDir, tlsFilePrefix+".key"))
+	fmt.Println("tlsDir=>", tlsDir)
+	fmt.Println("tlsFilePrefix=>", tlsFilePrefix)
+	err = keyExport(tlsDir, filepath.Join(tlsDir, tlsFilePrefix+".key"), tlsPrivKey)
 	if err != nil {
 		return err
 	}
@@ -195,7 +207,8 @@ func GenerateVerifyingMSP(
 	// the signing CA certificate goes into cacerts
 	err = x509Export(
 		filepath.Join(baseDir, "cacerts", x509Filename(signCA.Name)),
-		signCA.SignCert,
+		signCA.SignSm2Cert,
+		// signCA.SignCert,
 	)
 	if err != nil {
 		return err
@@ -203,7 +216,8 @@ func GenerateVerifyingMSP(
 	// the TLS CA certificate goes into tlscacerts
 	err = x509Export(
 		filepath.Join(baseDir, "tlscacerts", x509Filename(tlsCA.Name)),
-		tlsCA.SignCert,
+		tlsCA.SignSm2Cert,
+		// tlsCA.SignCert,
 	)
 	if err != nil {
 		return err
@@ -230,6 +244,7 @@ func GenerateVerifyingMSP(
 		return errors.WithMessage(err, "failed to create keystore directory")
 	}
 	priv, err := csp.GeneratePrivateKey(ksDir)
+	sm2PubKey, err := csp.GetSM2PublicKey(priv)
 	if err != nil {
 		return err
 	}
@@ -238,7 +253,7 @@ func GenerateVerifyingMSP(
 		signCA.Name,
 		nil,
 		nil,
-		&priv.PublicKey,
+		sm2PubKey,
 		x509.KeyUsageDigitalSignature,
 		[]x509.ExtKeyUsage{},
 	)
@@ -277,12 +292,14 @@ func x509Filename(name string) string {
 	return name + "-cert.pem"
 }
 
-func x509Export(path string, cert *x509.Certificate) error {
+func x509Export(path string, cert *sm2.Certificate) error {
 	return pemExport(path, "CERTIFICATE", cert.Raw)
 }
 
-func keyExport(keystore, output string) error {
-	return os.Rename(filepath.Join(keystore, "priv_sk"), output)
+func keyExport(keystore, output string, key bccsp.Key) error {
+	// return os.Rename(filepath.Join(keystore, "priv_sk"), output)
+	id := hex.EncodeToString(key.SKI())
+	return os.Rename(filepath.Join(keystore, id+"_sk"), output)
 }
 
 func pemExport(path, pemType string, bytes []byte) error {

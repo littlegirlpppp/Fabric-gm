@@ -8,8 +8,11 @@ package comm
 
 import (
 	"context"
-	"crypto/tls"
-	"crypto/x509"
+	// "crypto/tls"
+	// "crypto/x509"
+	tls "github.com/jxu86/gmtls"
+	"github.com/jxu86/gmtls/gmcredentials"
+	"github.com/jxu86/gmsm/sm2"
 	"errors"
 	"net"
 	"sync"
@@ -69,14 +72,14 @@ func (t *TLSConfig) Config() tls.Config {
 	return tls.Config{}
 }
 
-func (t *TLSConfig) AddClientRootCA(cert *x509.Certificate) {
+func (t *TLSConfig) AddClientRootCA(cert *sm2.Certificate) {
 	t.lock.Lock()
 	defer t.lock.Unlock()
 
 	t.config.ClientCAs.AddCert(cert)
 }
 
-func (t *TLSConfig) SetClientCAs(certPool *x509.CertPool) {
+func (t *TLSConfig) SetClientCAs(certPool *sm2.CertPool) {
 	t.lock.Lock()
 	defer t.lock.Unlock()
 
@@ -101,7 +104,7 @@ func (sc *serverCreds) ServerHandshake(rawConn net.Conn) (net.Conn, credentials.
 		}
 		return nil, nil, err
 	}
-	return conn, credentials.TLSInfo{State: conn.ConnectionState()}, nil
+	return conn, gmcredentials.TLSInfo{State: conn.ConnectionState()}, nil
 }
 
 // Info provides the ProtocolInfo of this TransportCredentials.
@@ -139,7 +142,7 @@ func (dtc *DynamicClientCredentials) latestConfig() *tls.Config {
 }
 
 func (dtc *DynamicClientCredentials) ClientHandshake(ctx context.Context, authority string, rawConn net.Conn) (net.Conn, credentials.AuthInfo, error) {
-	return credentials.NewTLS(dtc.latestConfig()).ClientHandshake(ctx, authority, rawConn)
+	return gmcredentials.NewTLS(dtc.latestConfig()).ClientHandshake(ctx, authority, rawConn)
 }
 
 func (dtc *DynamicClientCredentials) ServerHandshake(rawConn net.Conn) (net.Conn, credentials.AuthInfo, error) {
@@ -147,11 +150,11 @@ func (dtc *DynamicClientCredentials) ServerHandshake(rawConn net.Conn) (net.Conn
 }
 
 func (dtc *DynamicClientCredentials) Info() credentials.ProtocolInfo {
-	return credentials.NewTLS(dtc.latestConfig()).Info()
+	return gmcredentials.NewTLS(dtc.latestConfig()).Info()
 }
 
 func (dtc *DynamicClientCredentials) Clone() credentials.TransportCredentials {
-	return credentials.NewTLS(dtc.latestConfig())
+	return gmcredentials.NewTLS(dtc.latestConfig())
 }
 
 func (dtc *DynamicClientCredentials) OverrideServerName(name string) error {

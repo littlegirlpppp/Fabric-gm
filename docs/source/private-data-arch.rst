@@ -200,7 +200,7 @@ properties will have ensured the private data is available on other peers.
 Referencing collections from chaincode
 --------------------------------------
 
-A set of `shim APIs <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`_
+A set of `shim APIs <https://godoc.org/github.com/jxu86/fabric-chaincode-go/shim>`_
 are available for setting and retrieving private data.
 
 The same chaincode data operations can be applied to channel state data and
@@ -240,7 +240,7 @@ not to include private data in the main part of the chaincode proposal. A specia
 field in the chaincode proposal called the ``transient`` field can be used to pass
 private data from the client (or data that chaincode will use to generate private
 data), to chaincode invocation on the peer.  The chaincode can retrieve the
-``transient`` field by calling the `GetTransient() API <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetTransient>`_.
+``transient`` field by calling the `GetTransient() API <https://godoc.org/github.com/jxu86/fabric-chaincode-go/shim#ChaincodeStub.GetTransient>`_.
 This ``transient`` field gets excluded from the channel transaction.
 
 Protecting private data content
@@ -273,7 +273,7 @@ configuration definitions and how to set them, refer back to the
           ``memberOnlyRead`` and ``memberOnlyWrite`` to false. You can then apply your
           own access control logic in chaincode, for example by calling the GetCreator()
           chaincode API or using the client identity
-          `chaincode library <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetCreator>`__ .
+          `chaincode library <https://godoc.org/github.com/jxu86/fabric-chaincode-go/shim#ChaincodeStub.GetCreator>`__ .
 
 Querying Private Data
 ~~~~~~~~~~~~~~~~~~~~~

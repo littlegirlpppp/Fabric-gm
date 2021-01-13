@@ -17,7 +17,7 @@ import (
 
 /*
 
- Per the documentation at: https://godoc.org/github.com/Shopify/sarama Sarama exposes the following set of metrics:
+ Per the documentation at: https://godoc.org/github.com/jxu86/sarama Sarama exposes the following set of metrics:
 
  +----------------------------------------------+------------+---------------------------------------------------------------+
  | Name                                         | Type       | Description                                                   |

@@ -7,7 +7,8 @@ SPDX-License-Identifier: Apache-2.0
 package etcdraft
 
 import (
-	"crypto/x509"
+	// "crypto/x509"
+	"github.com/jxu86/gmsm/sm2"
 	"encoding/pem"
 	"fmt"
 
@@ -139,18 +140,18 @@ func validateConsenterTLSCerts(c *etcdraft.Consenter, ordererConfig channelconfi
 	return nil
 }
 
-func createX509VerifyOptions(orgs map[string]channelconfig.OrdererOrg) (x509.VerifyOptions, error) {
-	tlsRoots := x509.NewCertPool()
-	tlsIntermediates := x509.NewCertPool()
+func createX509VerifyOptions(orgs map[string]channelconfig.OrdererOrg) (sm2.VerifyOptions, error) {
+	tlsRoots := sm2.NewCertPool()
+	tlsIntermediates := sm2.NewCertPool()
 
 	for _, org := range orgs {
 		rootCerts, err := parseCertificateListFromBytes(org.MSP().GetTLSRootCerts())
 		if err != nil {
-			return x509.VerifyOptions{}, errors.Wrap(err, "parsing tls root certs")
+			return sm2.VerifyOptions{}, errors.Wrap(err, "parsing tls root certs")
 		}
 		intermediateCerts, err := parseCertificateListFromBytes(org.MSP().GetTLSIntermediateCerts())
 		if err != nil {
-			return x509.VerifyOptions{}, errors.Wrap(err, "parsing tls intermediate certs")
+			return sm2.VerifyOptions{}, errors.Wrap(err, "parsing tls intermediate certs")
 		}
 
 		for _, cert := range rootCerts {
@@ -161,18 +162,18 @@ func createX509VerifyOptions(orgs map[string]channelconfig.OrdererOrg) (x509.Ver
 		}
 	}
 
-	return x509.VerifyOptions{
+	return sm2.VerifyOptions{
 		Roots:         tlsRoots,
 		Intermediates: tlsIntermediates,
-		KeyUsages: []x509.ExtKeyUsage{
-			x509.ExtKeyUsageClientAuth,
-			x509.ExtKeyUsageServerAuth,
+		KeyUsages: []sm2.ExtKeyUsage{
+			sm2.ExtKeyUsageClientAuth,
+			sm2.ExtKeyUsageServerAuth,
 		},
 	}, nil
 }
 
-func parseCertificateListFromBytes(certs [][]byte) ([]*x509.Certificate, error) {
-	certificateList := []*x509.Certificate{}
+func parseCertificateListFromBytes(certs [][]byte) ([]*sm2.Certificate, error) {
+	certificateList := []*sm2.Certificate{}
 
 	for _, cert := range certs {
 		certificate, err := parseCertificateFromBytes(cert)
@@ -186,15 +187,15 @@ func parseCertificateListFromBytes(certs [][]byte) ([]*x509.Certificate, error) 
 	return certificateList, nil
 }
 
-func parseCertificateFromBytes(cert []byte) (*x509.Certificate, error) {
+func parseCertificateFromBytes(cert []byte) (*sm2.Certificate, error) {
 	pemBlock, _ := pem.Decode(cert)
 	if pemBlock == nil {
-		return &x509.Certificate{}, fmt.Errorf("no PEM data found in cert[% x]", cert)
+		return &sm2.Certificate{}, fmt.Errorf("no PEM data found in cert[% x]", cert)
 	}
 
-	certificate, err := x509.ParseCertificate(pemBlock.Bytes)
+	certificate, err := sm2.ParseCertificate(pemBlock.Bytes)
 	if err != nil {
-		return &x509.Certificate{}, err
+		return &sm2.Certificate{}, err
 	}
 
 	return certificate, nil

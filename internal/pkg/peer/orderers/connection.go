@@ -9,7 +9,7 @@ package orderers
 import (
 	"bytes"
 	"crypto/sha256"
-	"crypto/x509"
+	// "crypto/x509"
 	"math/rand"
 	"sync"
 
@@ -17,6 +17,10 @@ import (
 	"github.com/hyperledger/fabric/internal/pkg/comm"
 
 	"github.com/pkg/errors"
+	//todo：国密：sm2 credentials
+	"github.com/jxu86/gmsm/sm2"
+	// "github.com/jxu86/gmtls/gmcredentials"
+	// tls "github.com/jxu86/gmtls"
 )
 
 type ConnectionSource struct {
@@ -29,7 +33,7 @@ type ConnectionSource struct {
 
 type Endpoint struct {
 	Address   string
-	CertPool  *x509.CertPool
+	CertPool  *sm2.CertPool // *x509.CertPool
 	Refreshed chan struct{}
 }
 
@@ -148,10 +152,10 @@ func (cs *ConnectionSource) Update(globalAddrs []string, orgs map[string]Orderer
 
 	cs.allEndpoints = nil
 
-	globalCertPool := x509.NewCertPool()
+	globalCertPool := sm2.NewCertPool()
 
 	for orgName, org := range orgs {
-		certPool := x509.NewCertPool()
+		certPool := sm2.NewCertPool()
 		for _, rootCert := range org.RootCerts {
 			if hasOrgEndpoints {
 				if err := comm.AddPemToCertPool(rootCert, certPool); err != nil {

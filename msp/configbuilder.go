@@ -137,7 +137,7 @@ func SetupBCCSPKeystoreConfig(bccspConfig *factory.FactoryOpts, keystoreDir stri
 		bccspConfig = factory.GetDefaultOpts()
 	}
 
-	if bccspConfig.ProviderName == "SW" || bccspConfig.SwOpts != nil {
+	if bccspConfig.ProviderName == "SW" || bccspConfig.ProviderName == "GM" {
 		if bccspConfig.SwOpts == nil {
 			bccspConfig.SwOpts = factory.GetDefaultOpts().SwOpts
 		}
@@ -336,8 +336,8 @@ func getMspConfig(dir string, ID string, sigid *msp.SigningIdentityInfo) (*msp.M
 
 	// Set FabricCryptoConfig
 	cryptoConfig := &msp.FabricCryptoConfig{
-		SignatureHashFamily:            bccsp.SHA2,
-		IdentityIdentifierHashFunction: bccsp.SHA256,
+		SignatureHashFamily:            bccsp.GMSM3,
+		IdentityIdentifierHashFunction: bccsp.GMSM3,
 	}
 
 	// Compose FabricMSPConfig
@@ -354,7 +354,7 @@ func getMspConfig(dir string, ID string, sigid *msp.SigningIdentityInfo) (*msp.M
 		TlsIntermediateCerts:          tlsIntermediateCerts,
 		FabricNodeOus:                 nodeOUs,
 	}
-
+	
 	fmpsjs, _ := proto.Marshal(fmspconf)
 
 	mspconf := &msp.MSPConfig{Config: fmpsjs, Type: int32(FABRIC)}

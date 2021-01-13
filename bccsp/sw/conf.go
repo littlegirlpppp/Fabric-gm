@@ -12,7 +12,7 @@ import (
 	"crypto/sha512"
 	"fmt"
 	"hash"
-
+	"github.com/jxu86/gmsm/sm3"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -28,6 +28,8 @@ func (conf *config) setSecurityLevel(securityLevel int, hashFamily string) (err 
 		err = conf.setSecurityLevelSHA2(securityLevel)
 	case "SHA3":
 		err = conf.setSecurityLevelSHA3(securityLevel)
+	case "GMSM3":
+		err = conf.setSecurityLevelGMSM3(securityLevel)
 	default:
 		err = fmt.Errorf("Hash Family not supported [%s]", hashFamily)
 	}
@@ -59,6 +61,24 @@ func (conf *config) setSecurityLevelSHA3(level int) (err error) {
 	case 384:
 		conf.ellipticCurve = elliptic.P384()
 		conf.hashFunction = sha3.New384
+		conf.aesBitLength = 32
+	default:
+		err = fmt.Errorf("Security level not supported [%d]", level)
+	}
+	return
+}
+
+func (conf *config) setSecurityLevelGMSM3(level int) (err error) {
+	switch level {
+	case 256:
+		conf.ellipticCurve = elliptic.P256()
+		conf.hashFunction = sm3.New
+		// conf.rsaBitLength = 2048
+		conf.aesBitLength = 32
+	case 384:
+		conf.ellipticCurve = elliptic.P384()
+		conf.hashFunction = sm3.New
+		// conf.rsaBitLength = 3072
 		conf.aesBitLength = 32
 	default:
 		err = fmt.Errorf("Security level not supported [%d]", level)

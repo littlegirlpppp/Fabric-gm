@@ -7,7 +7,7 @@ SPDX-License-Identifier: Apache-2.0
 package policies
 
 import (
-	"crypto/x509"
+	"github.com/jxu86/gmsm/sm2"
 	"encoding/pem"
 	"fmt"
 	"strings"
@@ -413,7 +413,7 @@ func logMessageForSerializedIdentity(serializedIdentity []byte) (string, error) 
 		// identity bytes
 		return fmt.Sprintf("serialized-identity=%x", serializedIdentity), nil
 	}
-	cert, err := x509.ParseCertificate(pemBlock.Bytes)
+	cert, err := sm2.ParseCertificate(pemBlock.Bytes)
 	if err != nil {
 		return "", errors.Wrap(err, "parsing certificate")
 	}

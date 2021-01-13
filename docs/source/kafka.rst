@@ -190,7 +190,7 @@ Additional considerations
 Kafka Protocol Version Compatibility
 ------------------------------------
 
-Fabric uses the `sarama client library <https://github.com/Shopify/sarama>`_ and
+Fabric uses the `sarama client library <https://github.com/jxu86/sarama>`_ and
 vendors a version of it that supports Kafka 0.10 to 1.0, yet is still known to
 work with older versions.
 

@@ -2,7 +2,8 @@
 package mock
 
 import (
-	"crypto/ecdsa"
+	// "crypto/ecdsa"
+	"github.com/jxu86/gmsm/sm2"
 	"sync"
 
 	"github.com/hyperledger/fabric/bccsp"
@@ -10,22 +11,22 @@ import (
 )
 
 type Revocation struct {
-	NewKeyStub        func() (*ecdsa.PrivateKey, error)
+	NewKeyStub        func() (*sm2.PrivateKey, error)
 	newKeyMutex       sync.RWMutex
 	newKeyArgsForCall []struct {
 	}
 	newKeyReturns struct {
-		result1 *ecdsa.PrivateKey
+		result1 *sm2.PrivateKey
 		result2 error
 	}
 	newKeyReturnsOnCall map[int]struct {
-		result1 *ecdsa.PrivateKey
+		result1 *sm2.PrivateKey
 		result2 error
 	}
-	SignStub        func(*ecdsa.PrivateKey, [][]byte, int, bccsp.RevocationAlgorithm) ([]byte, error)
+	SignStub        func(*sm2.PrivateKey, [][]byte, int, bccsp.RevocationAlgorithm) ([]byte, error)
 	signMutex       sync.RWMutex
 	signArgsForCall []struct {
-		arg1 *ecdsa.PrivateKey
+		arg1 *sm2.PrivateKey
 		arg2 [][]byte
 		arg3 int
 		arg4 bccsp.RevocationAlgorithm
@@ -38,10 +39,10 @@ type Revocation struct {
 		result1 []byte
 		result2 error
 	}
-	VerifyStub        func(*ecdsa.PublicKey, []byte, int, bccsp.RevocationAlgorithm) error
+	VerifyStub        func(*sm2.PublicKey, []byte, int, bccsp.RevocationAlgorithm) error
 	verifyMutex       sync.RWMutex
 	verifyArgsForCall []struct {
-		arg1 *ecdsa.PublicKey
+		arg1 *sm2.PublicKey
 		arg2 []byte
 		arg3 int
 		arg4 bccsp.RevocationAlgorithm
@@ -56,7 +57,7 @@ type Revocation struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *Revocation) NewKey() (*ecdsa.PrivateKey, error) {
+func (fake *Revocation) NewKey() (*sm2.PrivateKey, error) {
 	fake.newKeyMutex.Lock()
 	ret, specificReturn := fake.newKeyReturnsOnCall[len(fake.newKeyArgsForCall)]
 	fake.newKeyArgsForCall = append(fake.newKeyArgsForCall, struct {
@@ -79,39 +80,39 @@ func (fake *Revocation) NewKeyCallCount() int {
 	return len(fake.newKeyArgsForCall)
 }
 
-func (fake *Revocation) NewKeyCalls(stub func() (*ecdsa.PrivateKey, error)) {
+func (fake *Revocation) NewKeyCalls(stub func() (*sm2.PrivateKey, error)) {
 	fake.newKeyMutex.Lock()
 	defer fake.newKeyMutex.Unlock()
 	fake.NewKeyStub = stub
 }
 
-func (fake *Revocation) NewKeyReturns(result1 *ecdsa.PrivateKey, result2 error) {
+func (fake *Revocation) NewKeyReturns(result1 *sm2.PrivateKey, result2 error) {
 	fake.newKeyMutex.Lock()
 	defer fake.newKeyMutex.Unlock()
 	fake.NewKeyStub = nil
 	fake.newKeyReturns = struct {
-		result1 *ecdsa.PrivateKey
+		result1 *sm2.PrivateKey
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *Revocation) NewKeyReturnsOnCall(i int, result1 *ecdsa.PrivateKey, result2 error) {
+func (fake *Revocation) NewKeyReturnsOnCall(i int, result1 *sm2.PrivateKey, result2 error) {
 	fake.newKeyMutex.Lock()
 	defer fake.newKeyMutex.Unlock()
 	fake.NewKeyStub = nil
 	if fake.newKeyReturnsOnCall == nil {
 		fake.newKeyReturnsOnCall = make(map[int]struct {
-			result1 *ecdsa.PrivateKey
+			result1 *sm2.PrivateKey
 			result2 error
 		})
 	}
 	fake.newKeyReturnsOnCall[i] = struct {
-		result1 *ecdsa.PrivateKey
+		result1 *sm2.PrivateKey
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *Revocation) Sign(arg1 *ecdsa.PrivateKey, arg2 [][]byte, arg3 int, arg4 bccsp.RevocationAlgorithm) ([]byte, error) {
+func (fake *Revocation) Sign(arg1 *sm2.PrivateKey, arg2 [][]byte, arg3 int, arg4 bccsp.RevocationAlgorithm) ([]byte, error) {
 	var arg2Copy [][]byte
 	if arg2 != nil {
 		arg2Copy = make([][]byte, len(arg2))
@@ -120,7 +121,7 @@ func (fake *Revocation) Sign(arg1 *ecdsa.PrivateKey, arg2 [][]byte, arg3 int, ar
 	fake.signMutex.Lock()
 	ret, specificReturn := fake.signReturnsOnCall[len(fake.signArgsForCall)]
 	fake.signArgsForCall = append(fake.signArgsForCall, struct {
-		arg1 *ecdsa.PrivateKey
+		arg1 *sm2.PrivateKey
 		arg2 [][]byte
 		arg3 int
 		arg4 bccsp.RevocationAlgorithm
@@ -143,13 +144,13 @@ func (fake *Revocation) SignCallCount() int {
 	return len(fake.signArgsForCall)
 }
 
-func (fake *Revocation) SignCalls(stub func(*ecdsa.PrivateKey, [][]byte, int, bccsp.RevocationAlgorithm) ([]byte, error)) {
+func (fake *Revocation) SignCalls(stub func(*sm2.PrivateKey, [][]byte, int, bccsp.RevocationAlgorithm) ([]byte, error)) {
 	fake.signMutex.Lock()
 	defer fake.signMutex.Unlock()
 	fake.SignStub = stub
 }
 
-func (fake *Revocation) SignArgsForCall(i int) (*ecdsa.PrivateKey, [][]byte, int, bccsp.RevocationAlgorithm) {
+func (fake *Revocation) SignArgsForCall(i int) (*sm2.PrivateKey, [][]byte, int, bccsp.RevocationAlgorithm) {
 	fake.signMutex.RLock()
 	defer fake.signMutex.RUnlock()
 	argsForCall := fake.signArgsForCall[i]
@@ -182,7 +183,7 @@ func (fake *Revocation) SignReturnsOnCall(i int, result1 []byte, result2 error) 
 	}{result1, result2}
 }
 
-func (fake *Revocation) Verify(arg1 *ecdsa.PublicKey, arg2 []byte, arg3 int, arg4 bccsp.RevocationAlgorithm) error {
+func (fake *Revocation) Verify(arg1 *sm2.PublicKey, arg2 []byte, arg3 int, arg4 bccsp.RevocationAlgorithm) error {
 	var arg2Copy []byte
 	if arg2 != nil {
 		arg2Copy = make([]byte, len(arg2))
@@ -191,7 +192,7 @@ func (fake *Revocation) Verify(arg1 *ecdsa.PublicKey, arg2 []byte, arg3 int, arg
 	fake.verifyMutex.Lock()
 	ret, specificReturn := fake.verifyReturnsOnCall[len(fake.verifyArgsForCall)]
 	fake.verifyArgsForCall = append(fake.verifyArgsForCall, struct {
-		arg1 *ecdsa.PublicKey
+		arg1 *sm2.PublicKey
 		arg2 []byte
 		arg3 int
 		arg4 bccsp.RevocationAlgorithm
@@ -214,13 +215,13 @@ func (fake *Revocation) VerifyCallCount() int {
 	return len(fake.verifyArgsForCall)
 }
 
-func (fake *Revocation) VerifyCalls(stub func(*ecdsa.PublicKey, []byte, int, bccsp.RevocationAlgorithm) error) {
+func (fake *Revocation) VerifyCalls(stub func(*sm2.PublicKey, []byte, int, bccsp.RevocationAlgorithm) error) {
 	fake.verifyMutex.Lock()
 	defer fake.verifyMutex.Unlock()
 	fake.VerifyStub = stub
 }
 
-func (fake *Revocation) VerifyArgsForCall(i int) (*ecdsa.PublicKey, []byte, int, bccsp.RevocationAlgorithm) {
+func (fake *Revocation) VerifyArgsForCall(i int) (*sm2.PublicKey, []byte, int, bccsp.RevocationAlgorithm) {
 	fake.verifyMutex.RLock()
 	defer fake.verifyMutex.RUnlock()
 	argsForCall := fake.verifyArgsForCall[i]

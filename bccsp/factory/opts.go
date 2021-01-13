@@ -18,11 +18,12 @@ package factory
 
 // GetDefaultOpts offers a default implementation for Opts
 // returns a new instance every time
+// 获取默认的加密操作，使用SHA256进行数据加密
 func GetDefaultOpts() *FactoryOpts {
 	return &FactoryOpts{
-		ProviderName: "SW",
+		ProviderName: "GM",
 		SwOpts: &SwOpts{
-			HashFamily: "SHA2",
+			HashFamily: "GMSM3",
 			SecLevel:   256,
 			Ephemeral:  true,
 		},

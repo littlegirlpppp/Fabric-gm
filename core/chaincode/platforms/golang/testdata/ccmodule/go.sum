@@ -13,8 +13,8 @@ github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5y
 github.com/golang/protobuf v1.3.2 h1:6nsPYzhq5kReh6QImI3k5qWzO4PEbvbIW2cwSfR/6xs=
 github.com/golang/protobuf v1.3.2/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/google/go-cmp v0.2.0/go.mod h1:oXzfMopK8JAjlY9xF4vHSVASa0yLyX7SntLO5aqRK0M=
-github.com/hyperledger/fabric-chaincode-go v0.0.0-20190823162523-04390e015b85 h1:VEm3tPRTCzq3J/1XpVERh1PbOSnshUVwx2G5s3cLiTw=
-github.com/hyperledger/fabric-chaincode-go v0.0.0-20190823162523-04390e015b85/go.mod h1:HZK6PKLWrvdD/t0oSLiyaRaUM6fZ7qjJuOlb0zrn0mo=
+github.com/jxu86/fabric-chaincode-go v0.0.0-20190823162523-04390e015b85 h1:VEm3tPRTCzq3J/1XpVERh1PbOSnshUVwx2G5s3cLiTw=
+github.com/jxu86/fabric-chaincode-go v0.0.0-20190823162523-04390e015b85/go.mod h1:HZK6PKLWrvdD/t0oSLiyaRaUM6fZ7qjJuOlb0zrn0mo=
 github.com/hyperledger/fabric-protos-go v0.0.0-20190821214336-621b908d5022/go.mod h1:xVYTjK4DtZRBxZ2D9aE4y6AbLaPwue2o/criQyQbVD0=
 github.com/hyperledger/fabric-protos-go v0.0.0-20190823190507-26c33c998676 h1:35/AU/6kOZgrblvSjglQ6yoz3opCKTpfoMjQygtCD/U=
 github.com/hyperledger/fabric-protos-go v0.0.0-20190823190507-26c33c998676/go.mod h1:xVYTjK4DtZRBxZ2D9aE4y6AbLaPwue2o/criQyQbVD0=

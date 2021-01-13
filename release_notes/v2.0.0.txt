@@ -39,7 +39,7 @@ The shim package and dependencies for go chaincode are no longer included in
 the chaincode build environment. Chaincode packages that do not include their
 own dependencies will no longer successfully build on the peer.  We strongly
 recommend that existing go chaincode be updated to vendor the
-github.com/hyperledger/fabric-chaincode-go/shim package and its dependencies.
+github.com/jxu86/fabric-chaincode-go/shim package and its dependencies.
 While there are many tools for managing vendored dependencies, we recommend
 moving directly to go modules and vendoring with `go mod vendor`.
 

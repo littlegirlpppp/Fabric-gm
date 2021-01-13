@@ -9,7 +9,8 @@ package comm
 import (
 	"bytes"
 	"context"
-	"crypto/tls"
+	// "crypto/tls"
+	tls "github.com/jxu86/gmtls"
 	"encoding/hex"
 	"fmt"
 	"reflect"
