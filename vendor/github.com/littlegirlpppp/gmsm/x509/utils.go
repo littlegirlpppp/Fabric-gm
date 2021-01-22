@@ -239,3 +239,7 @@ func ReadPrivateKeyFromMem(data []byte, pwd []byte) (*sm2.PrivateKey, error) {
 func ReadPublicKeyFromMem(data []byte, _ []byte) (*sm2.PublicKey, error) {
 	return  ReadPublicKeyFromPem(data)
 }
+
+func ReadCertificateFromMem(data []byte)(*Certificate,error)  {
+	return ReadCertificateFromPem(data)
+}

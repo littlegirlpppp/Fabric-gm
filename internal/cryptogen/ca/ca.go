@@ -7,12 +7,10 @@ package ca
 
 import (
 	"crypto"
-	"crypto/elliptic"
 	"fmt"
 
 	// "crypto/elliptic"
 	"crypto/rand"
-	"crypto/sha256"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
@@ -24,13 +22,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hyperledger/fabric/internal/cryptogen/csp"
-	"github.com/pkg/errors"
-
 	"github.com/hyperledger/fabric/bccsp"
 	"github.com/hyperledger/fabric/bccsp/gm"
 	"github.com/hyperledger/fabric/bccsp/utils"
+	"github.com/hyperledger/fabric/internal/cryptogen/csp"
 	"github.com/littlegirlpppp/gmsm/sm2"
+	gmx509 "github.com/littlegirlpppp/gmsm/x509"
 )
 
 type CA struct {
@@ -43,7 +40,7 @@ type CA struct {
 	PostalCode         string
 	Signer             crypto.Signer
 	SignCert           *x509.Certificate
-	SignSm2Cert        *sm2.Certificate
+	SignSm2Cert        *gmx509.Certificate
 	Sm2Key             bccsp.Key
 }
 
@@ -136,7 +133,7 @@ func (ca *CA) SignCertificate(
 	pub *sm2.PublicKey,
 	ku x509.KeyUsage,
 	eku []x509.ExtKeyUsage,
-) (*sm2.Certificate, error) {
+) (*gmx509.Certificate, error) {
 
 	template := x509Template()
 	template.KeyUsage = ku
@@ -183,49 +180,6 @@ func (ca *CA) SignCertificate(
 	}
 
 	return cert, nil
-}
-
-func GeneratePrivateKey(keystorePath string) (*sm2.PrivateKey, error) {
-
-	priv, err := sm2.GenerateKey()
-	if err != nil {
-		return nil, errors.WithMessage(err, "failed to generate private key")
-	}
-
-	pkcs8Encoded, err := sm2.MarshalSm2PrivateKey(priv,nil)
-	if err != nil {
-		return nil, errors.WithMessage(err, "failed to marshal private key")
-	}
-
-	pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: pkcs8Encoded})
-
-	keyFile := filepath.Join(keystorePath, "priv_sk")
-	err = ioutil.WriteFile(keyFile, pemEncoded, 0600)
-	if err != nil {
-		return nil, errors.WithMessagef(err, "failed to save private key to file %s", keyFile)
-	}
-
-	return priv, err
-}
-// compute Subject Key Identifier
-func computeSKI(privKey *sm2.PrivateKey) []byte {
-	// Marshall the public key
-	raw := elliptic.Marshal(privKey.Curve, privKey.PublicKey.X, privKey.PublicKey.Y)
-
-	// Hash it
-	hash := sha256.Sum256(raw)
-	return hash[:]
-}
-func computeSKI1(serialise func() ([]byte, error)) ([]byte, error) {
-	raw, err := serialise()
-	if err != nil {
-		return nil, err
-	}
-
-	hash := sha256.New()
-	hash.Write(raw)
-	return hash.Sum(nil), nil
-
 }
 
 // default template for X509 subject
@@ -293,8 +247,8 @@ func x509Template() x509.Certificate {
 }
 
 //generate a signed X509 certficate using GMSM2
-func genCertificateGMSM2(baseDir, name string, template, parent *sm2.Certificate, pub *sm2.PublicKey,
-	key bccsp.Key) (*sm2.Certificate, error) {
+func genCertificateGMSM2(baseDir, name string, template, parent *gmx509.Certificate, pub *sm2.PublicKey,
+	key bccsp.Key) (*gmx509.Certificate, error) {
 	//create the x509 public cert
 	certBytes, err := gm.CreateCertificateToMem(template, parent, key)
 
@@ -319,7 +273,7 @@ func genCertificateGMSM2(baseDir, name string, template, parent *sm2.Certificate
 	}
 	//x509Cert, err := sm2.ReadCertificateFromPem(fileName)
 
-	x509Cert, err := sm2.ReadCertificateFromMem(certBytes)
+	x509Cert, err := gmx509.ReadCertificateFromMem(certBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -328,8 +282,8 @@ func genCertificateGMSM2(baseDir, name string, template, parent *sm2.Certificate
 }
 
 // LoadCertificateGMSM2 load a ecdsa cert from a file in cert path
-func LoadCertificateGMSM2(certPath string) (*sm2.Certificate, error) {
-	var cert *sm2.Certificate
+func LoadCertificateGMSM2(certPath string) (*gmx509.Certificate, error) {
+	var cert *gmx509.Certificate
 	var err error
 
 	walkFunc := func(path string, info os.FileInfo, err error) error {
