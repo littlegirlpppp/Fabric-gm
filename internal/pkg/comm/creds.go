@@ -56,6 +56,7 @@ type TLSConfig struct {
 }
 
 func NewTLSConfig(config *tls.Config) *TLSConfig {
+	config.GMSupport=&tls.GMSupport{}
 	return &TLSConfig{
 		config: config,
 	}

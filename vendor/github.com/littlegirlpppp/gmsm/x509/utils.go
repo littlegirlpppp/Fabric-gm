@@ -208,7 +208,7 @@ func CreateCertificateToPem(template, parent *Certificate, pubKey *sm2.PublicKey
 }
 
 // todo 新增加的适配用
-func ParseSm2CertifateToX509(asn1data []byte) (*x509.Certificate, error) {
+func ParseSm2CertifateToX509Test(asn1data []byte) (*x509.Certificate, error) {
 	sm2Cert, err := ParseCertificate(asn1data)
 	if err != nil {
 		return nil, err
@@ -217,80 +217,25 @@ func ParseSm2CertifateToX509(asn1data []byte) (*x509.Certificate, error) {
 }
 
 func WritePrivateKeytoMem(key *sm2.PrivateKey, pwd []byte) ([]byte, error) {
-	var block *pem.Block
-
-	der, err := MarshalSm2PrivateKey(key, pwd)
-	if err != nil {
-		return nil, err
-	}
-	if pwd != nil {
-		block = &pem.Block{
-			Type:  "ENCRYPTED PRIVATE KEY",
-			Bytes: der,
-		}
-	} else {
-		block = &pem.Block{
-			Type:  "PRIVATE KEY",
-			Bytes: der,
-		}
-	}
-	return pem.EncodeToMemory(block), nil
+	return WritePrivateKeyToPem(key,pwd)
 }
 
 func WritePublicKeytoMem(key *sm2.PublicKey, _ []byte) ([]byte, error) {
-	der, err := MarshalSm2PublicKey(key)
-	if err != nil {
-		return nil, err
-	}
-	block := &pem.Block{
-		Type:  "PUBLIC KEY",
-		Bytes: der,
-	}
-	return pem.EncodeToMemory(block), nil
+return WritePublicKeyToPem(key)
 }
 
 func CreateCertificateToMem(template, parent *Certificate, pubKey *sm2.PublicKey, privKey *sm2.PrivateKey) ([]byte, error) {
-	der, err := CreateCertificate(template, parent, pubKey, privKey)
-	if err != nil {
-		return nil, err
-	}
-	block := &pem.Block{
-		Type:  "CERTIFICATE",
-		Bytes: der,
-	}
-	return pem.EncodeToMemory(block), nil
+	return CreateCertificateToPem(template,parent,pubKey,privKey)
 }
 
-
-
 func CreateCertificateRequestToMem(template *CertificateRequest, privKey *sm2.PrivateKey) ([]byte, error) {
-	der, err := CreateCertificateRequest(rand.Reader, template, privKey)
-	if err != nil {
-		return nil, err
-	}
-	block := &pem.Block{
-		Type:  "CERTIFICATE REQUEST",
-		Bytes: der,
-	}
-	return pem.EncodeToMemory(block), nil
+    return  CreateCertificateRequestToPem(template,privKey)
 }
 
 func ReadPrivateKeyFromMem(data []byte, pwd []byte) (*sm2.PrivateKey, error) {
-	var block *pem.Block
-
-	block, _ = pem.Decode(data)
-	if block == nil {
-		return nil, errors.New("failed to decode private key")
-	}
-	priv, err := ParsePKCS8PrivateKey(block.Bytes, pwd)
-	return priv, err
+	return  ReadPrivateKeyFromPem(data,pwd)
 }
 
 func ReadPublicKeyFromMem(data []byte, _ []byte) (*sm2.PublicKey, error) {
-	block, _ := pem.Decode(data)
-	if block == nil || block.Type != "PUBLIC KEY" {
-		return nil, errors.New("failed to decode public key")
-	}
-	pub, err := ParseSm2PublicKey(block.Bytes)
-	return pub, err
+	return  ReadPublicKeyFromPem(data)
 }
