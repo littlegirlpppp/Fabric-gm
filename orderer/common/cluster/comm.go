@@ -9,11 +9,11 @@ package cluster
 import (
 	"bytes"
 	"context"
-	// "crypto/x509"
-	"github.com/jxu86/gmsm/sm2"
-	"github.com/hyperledger/fabric/bccsp/gm"
+	gmx509 "github.com/littlegirlpppp/gmsm/x509"
+
 	"encoding/pem"
 	"fmt"
+	"github.com/hyperledger/fabric/bccsp/gm"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -323,7 +323,7 @@ func (c *Comm) updateStubInMapping(channel string, mapping MemberMapping, node R
 // a stub atomically.
 func (c *Comm) createRemoteContext(stub *Stub, channel string) func() (*RemoteContext, error) {
 	return func() (*RemoteContext, error) {
-		sm2Cert, err := sm2.ParseCertificate(stub.ServerTLSCert)
+		sm2Cert, err := gmx509.ParseCertificate(stub.ServerTLSCert)
 		if err != nil {
 			pemString := string(pem.EncodeToMemory(&pem.Block{Bytes: stub.ServerTLSCert}))
 			c.Logger.Errorf("Invalid DER for channel %s, endpoint %s, ID %d: %v", channel, stub.Endpoint, stub.ID, pemString)

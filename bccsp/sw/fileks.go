@@ -20,8 +20,9 @@ import (
 	"sync"
 
 	"github.com/hyperledger/fabric/bccsp"
-	"github.com/jxu86/gmsm/sm2"
-	"github.com/jxu86/gmsm/sm4"
+	"github.com/littlegirlpppp/gmsm/sm2"
+	x509 "github.com/littlegirlpppp/gmsm/x509"
+	"github.com/littlegirlpppp/gmsm/sm4"
 )
 
 // NewFileBasedKeyStore instantiated a file-based key store at a given position.
@@ -354,7 +355,7 @@ func (ks *fileBasedKeyStore) loadPrivateKey(alias string) (interface{}, error) {
 
 	// privateKey, err := pemToPrivateKey(raw, ks.pwd)
 	ks.pwd = nil
-	privateKey, err := sm2.ReadPrivateKeyFromMem(raw, ks.pwd)
+	privateKey, err := x509.ReadPrivateKeyFromMem(raw, ks.pwd)
 	if err != nil {
 		logger.Errorf("Failed parsing private key [%s]: [%s].", alias, err.Error())
 
@@ -376,7 +377,7 @@ func (ks *fileBasedKeyStore) loadPublicKey(alias string) (interface{}, error) {
 	}
 
 	// privateKey, err := pemToPublicKey(raw, ks.pwd)
-	privateKey, err := sm2.ReadPublicKeyFromMem(raw, nil)
+	privateKey, err := x509.ReadPublicKeyFromMem(raw, nil)
 	if err != nil {
 		logger.Errorf("Failed parsing private key [%s]: [%s].", alias, err.Error())
 

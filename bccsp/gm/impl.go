@@ -24,7 +24,7 @@ import (
 	"github.com/hyperledger/fabric/bccsp"
 	"github.com/hyperledger/fabric/common/flogging"
 	"github.com/pkg/errors"
-	"github.com/jxu86/gmsm/sm3"
+	"github.com/littlegirlpppp/gmsm/sm3"
 	"golang.org/x/crypto/sha3"
 )
 //todo：国密：增加gm

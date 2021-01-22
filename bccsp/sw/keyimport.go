@@ -13,8 +13,8 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/jxu86/gmsm/sm2"
-
+	"github.com/littlegirlpppp/gmsm/sm2"
+	gmx509 "github.com/littlegirlpppp/gmsm/x509"
 	"github.com/hyperledger/fabric/bccsp"
 	"github.com/hyperledger/fabric/bccsp/utils"
 )
@@ -120,7 +120,7 @@ type x509PublicKeyImportOptsKeyImporter struct {
 
 func (ki *x509PublicKeyImportOptsKeyImporter) KeyImport(raw interface{}, opts bccsp.KeyImportOpts) (bccsp.Key, error) {
 	// x509 换成 sm2
-	sm2Cert, ok := raw.(*sm2.Certificate)
+	sm2Cert, ok := raw.(*gmx509.Certificate)
 	if !ok {
 		return nil, errors.New("Invalid raw material. Expected *sm2.Certificate.")
 	}
@@ -134,7 +134,7 @@ func (ki *x509PublicKeyImportOptsKeyImporter) KeyImport(raw interface{}, opts bc
 		if !ok {
 			return nil, errors.New("Parse interface []  to sm2 pk error")
 		}
-		der, err := sm2.MarshalSm2PublicKey(sm2PublickKey)
+		der, err := gmx509.MarshalSm2PublicKey(sm2PublickKey)
 		if err != nil {
 			return nil, errors.New("MarshalSm2PublicKey error")
 		}
@@ -181,7 +181,7 @@ func (*gmsm2PrivateKeyImportOptsKeyImporter) KeyImport(raw interface{}, opts bcc
 		return nil, errors.New("[GMSM2PrivateKeyImportOpts] Invalid raw. It must not be nil.")
 	}
 
-	gmsm2SK, err := sm2.ParsePKCS8UnecryptedPrivateKey(der)
+	gmsm2SK, err := gmx509.ParsePKCS8UnecryptedPrivateKey(der)
 
 	if err != nil {
 		return nil, fmt.Errorf("Failed converting to GMSM2 private key [%s]", err)
@@ -202,7 +202,7 @@ func (*gmsm2PublicKeyImportOptsKeyImporter) KeyImport(raw interface{}, opts bccs
 		return nil, errors.New("[GMSM2PublicKeyImportOpts] Invalid raw. It must not be nil.")
 	}
 
-	gmsm2SK, err := sm2.ParseSm2PublicKey(der)
+	gmsm2SK, err := gmx509.ParseSm2PublicKey(der)
 	if err != nil {
 		return nil, fmt.Errorf("Failed converting to GMSM2 public key [%s]", err)
 	}

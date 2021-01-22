@@ -10,20 +10,21 @@ import (
 	"bytes"
 	"context"
 	"crypto/sha256"
+
 	// "crypto/x509"
 	"encoding/pem"
 	"net"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/pkg/errors"
+	credentials "github.com/littlegirlpppp/gmsm/gmtls/gmcredentials"
+	gmx509 "github.com/littlegirlpppp/gmsm/x509"
 	// "google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/peer"
-	"github.com/jxu86/gmsm/sm2"
-	credentials "github.com/jxu86/gmtls/gmcredentials"
 )
 
 // AddPemToCertPool adds PEM-encoded certs to a cert pool
-func AddPemToCertPool(pemCerts []byte, pool *sm2.CertPool) error {
+func AddPemToCertPool(pemCerts []byte, pool *gmx509.CertPool) error {
 	// certs, err := pemToX509Certs(pemCerts)
 	block, _ := pem.Decode(pemCerts)
 	if block != nil {
@@ -40,8 +41,8 @@ func AddPemToCertPool(pemCerts []byte, pool *sm2.CertPool) error {
 	return nil
 }
 // parse PEM-encoded certs
-func pemToGMSM2Certs(pemCerts []byte) ([]*sm2.Certificate, error) {
-	var certs []*sm2.Certificate
+func pemToGMSM2Certs(pemCerts []byte) ([]*gmx509.Certificate, error) {
+	var certs []*gmx509.Certificate
 	var subjects []string
 
 	// it's possible that multiple certs are encoded
@@ -52,7 +53,7 @@ func pemToGMSM2Certs(pemCerts []byte) ([]*sm2.Certificate, error) {
 			break
 		}
 
-		cert, err := sm2.ParseCertificate(block.Bytes)
+		cert, err := gmx509.ParseCertificate(block.Bytes)
 		if err != nil {
 			return nil, err
 		}
@@ -64,8 +65,8 @@ func pemToGMSM2Certs(pemCerts []byte) ([]*sm2.Certificate, error) {
 	return certs, nil
 }
 // parse PEM-encoded certs
-func pemToX509Certs(pemCerts []byte) ([]*sm2.Certificate, error) {
-	var certs []*sm2.Certificate
+func pemToX509Certs(pemCerts []byte) ([]*gmx509.Certificate, error) {
+	var certs []*gmx509.Certificate
 
 	// it's possible that multiple certs are encoded
 	for len(pemCerts) > 0 {
@@ -75,7 +76,7 @@ func pemToX509Certs(pemCerts []byte) ([]*sm2.Certificate, error) {
 			break
 		}
 
-		cert, err := sm2.ParseCertificate(block.Bytes)
+		cert, err := gmx509.ParseCertificate(block.Bytes)
 		if err != nil {
 			return nil, err
 		}
@@ -151,7 +152,7 @@ func ExtractCertificateHashFromContext(ctx context.Context) []byte {
 
 // ExtractCertificateFromContext returns the TLS certificate (if applicable)
 // from the given context of a gRPC stream
-func ExtractCertificateFromContext(ctx context.Context) *sm2.Certificate {
+func ExtractCertificateFromContext(ctx context.Context) *gmx509.Certificate {
 	pr, extracted := peer.FromContext(ctx)
 	if !extracted {
 		return nil

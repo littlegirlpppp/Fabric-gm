@@ -11,7 +11,8 @@ import (
 	"crypto/rand"
 	"crypto/x509/pkix"
 	"encoding/pem"
-	"github.com/jxu86/gmsm/sm2"
+	"github.com/littlegirlpppp/gmsm/sm2"
+	gmx509 "github.com/littlegirlpppp/gmsm/x509"
 	"github.com/pkg/errors"
 	"math/big"
 	"net"
@@ -19,32 +20,32 @@ import (
 )
 
 func newPrivKey() (*sm2.PrivateKey, []byte, error) {
-	privateKey, err := sm2.GenerateKey()
+	privateKey, err := sm2.GenerateKey(nil)
 	if err != nil {
 		return nil, nil, err
 	}
-	privBytes, err := sm2.MarshalSm2UnecryptedPrivateKey(privateKey)
+	privBytes, err := gmx509.MarshalSm2UnecryptedPrivateKey(privateKey)
 	if err != nil {
 		return nil, nil, err
 	}
 	return privateKey, privBytes, nil
 }
 
-func newCertTemplate() (sm2.Certificate, error) {
+func newCertTemplate() (gmx509.Certificate, error) {
 	sn, err := rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), 128))
 	if err != nil {
-		return sm2.Certificate{}, err
+		return gmx509.Certificate{}, err
 	}
-	return sm2.Certificate{
+	return gmx509.Certificate{
 		Subject:      pkix.Name{SerialNumber: sn.String()},
 		NotBefore:    time.Now().Add(time.Hour * (-24)),
 		NotAfter:     time.Now().Add(time.Hour * 24),
-		KeyUsage:     sm2.KeyUsageKeyEncipherment | sm2.KeyUsageDigitalSignature,
+		KeyUsage:     gmx509.KeyUsageKeyEncipherment | gmx509.KeyUsageDigitalSignature,
 		SerialNumber: sn,
 	}, nil
 }
 
-func newCertKeyPair(isCA bool, isServer bool, host string, certSigner crypto.Signer, parent *sm2.Certificate) (*CertKeyPair, error) {
+func newCertKeyPair(isCA bool, isServer bool, host string, certSigner crypto.Signer, parent *gmx509.Certificate) (*CertKeyPair, error) {
 	privateKey, privBytes, err := newPrivKey()
 	if err != nil {
 		return nil, err
@@ -59,18 +60,18 @@ func newCertKeyPair(isCA bool, isServer bool, host string, certSigner crypto.Sig
 	if isCA {
 		template.NotAfter = tenYearsFromNow
 		template.IsCA = true
-		template.KeyUsage |= sm2.KeyUsageCertSign | sm2.KeyUsageCRLSign
-		template.ExtKeyUsage = []sm2.ExtKeyUsage{
-			sm2.ExtKeyUsageClientAuth,
-			sm2.ExtKeyUsageServerAuth,
+		template.KeyUsage |= gmx509.KeyUsageCertSign | gmx509.KeyUsageCRLSign
+		template.ExtKeyUsage = []gmx509.ExtKeyUsage{
+			gmx509.ExtKeyUsageClientAuth,
+			gmx509.ExtKeyUsageServerAuth,
 		}
 		template.BasicConstraintsValid = true
 	} else {
-		template.ExtKeyUsage = []sm2.ExtKeyUsage{sm2.ExtKeyUsageClientAuth}
+		template.ExtKeyUsage = []gmx509.ExtKeyUsage{gmx509.ExtKeyUsageClientAuth}
 	}
 	if isServer {
 		template.NotAfter = tenYearsFromNow
-		template.ExtKeyUsage = append(template.ExtKeyUsage, sm2.ExtKeyUsageServerAuth)
+		template.ExtKeyUsage = append(template.ExtKeyUsage, gmx509.ExtKeyUsageServerAuth)
 		if ip := net.ParseIP(host); ip != nil {
 			template.IPAddresses = append(template.IPAddresses, ip)
 		} else {
@@ -82,7 +83,7 @@ func newCertKeyPair(isCA bool, isServer bool, host string, certSigner crypto.Sig
 		parent = &template
 		certSigner = privateKey
 	}
-	rawBytes, err := sm2.CreateCertificate(rand.Reader, &template, parent, &privateKey.PublicKey, certSigner)
+	rawBytes, err := gmx509.CreateCertificate( &template, parent, &privateKey.PublicKey, certSigner)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +93,7 @@ func newCertKeyPair(isCA bool, isServer bool, host string, certSigner crypto.Sig
 	if block == nil { // Never comes unless x509 or pem has bug
 		return nil, errors.Errorf("%s: wrong PEM encoding", pubKey)
 	}
-	cert, err := sm2.ParseCertificate(block.Bytes)
+	cert, err := gmx509.ParseCertificate(block.Bytes)
 	if err != nil {
 		return nil, err
 	}

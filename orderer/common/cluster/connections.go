@@ -7,7 +7,8 @@ SPDX-License-Identifier: Apache-2.0
 package cluster
 
 import (
-	"github.com/jxu86/gmsm/sm2"
+	gmx509 "github.com/littlegirlpppp/gmsm/x509"
+
 	// "crypto/x509"
 	"sync"
 
@@ -18,7 +19,7 @@ import (
 )
 
 // RemoteVerifier verifies the connection to the remote host
-type RemoteVerifier func(rawCerts [][]byte, verifiedChains [][]*sm2.Certificate) error
+type RemoteVerifier func(rawCerts [][]byte, verifiedChains [][]*gmx509.Certificate) error
 
 //go:generate mockery -dir . -name SecureDialer -case underscore -output ./mocks/
 
@@ -57,7 +58,7 @@ func NewConnectionStore(dialer SecureDialer, tlsConnectionCount metrics.Gauge) *
 // verifyHandshake returns a predicate that verifies that the remote node authenticates
 // itself with the given TLS certificate
 func (c *ConnectionStore) verifyHandshake(endpoint string, certificate []byte) RemoteVerifier {
-	return func(rawCerts [][]byte, verifiedChains [][]*sm2.Certificate) error {
+	return func(rawCerts [][]byte, verifiedChains [][]*gmx509.Certificate) error {
 		err := crypto.CertificatesWithSamePublicKey(certificate, rawCerts[0])
 		if err == nil {
 			return nil

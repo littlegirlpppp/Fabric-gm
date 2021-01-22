@@ -23,7 +23,7 @@ import (
 	"math/big"
 
 	"github.com/hyperledger/fabric/bccsp"
-	"github.com/jxu86/gmsm/sm2"
+	"github.com/littlegirlpppp/gmsm/sm2"
 )
 //todo：国密：增加gm
 type SM2Signature struct {

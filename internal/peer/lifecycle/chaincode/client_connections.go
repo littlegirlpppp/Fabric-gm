@@ -8,7 +8,7 @@ package chaincode
 
 import (
 	// "crypto/tls"
-	tls "github.com/jxu86/gmtls"
+	tls "github.com/littlegirlpppp/gmsm/gmtls"
 	pb "github.com/hyperledger/fabric-protos-go/peer"
 	"github.com/hyperledger/fabric/bccsp"
 	"github.com/hyperledger/fabric/internal/peer/common"

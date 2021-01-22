@@ -10,9 +10,9 @@ import (
 	"context"
 	// "crypto/tls"
 	// "crypto/x509"
-	tls "github.com/jxu86/gmtls"
-	"github.com/jxu86/gmtls/gmcredentials"
-	"github.com/jxu86/gmsm/sm2"
+	tls "github.com/littlegirlpppp/gmsm/gmtls"
+	"github.com/littlegirlpppp/gmsm/gmtls/gmcredentials"
+	gmx509 "github.com/littlegirlpppp/gmsm/x509"
 	"errors"
 	"net"
 	"sync"
@@ -38,7 +38,7 @@ func NewServerTransportCredentials(
 	// NOTE: unlike the default grpc/credentials implementation, we do not
 	// clone the tls.Config which allows us to update it dynamically
 	serverConfig.config.NextProtos = alpnProtoStr
-	serverConfig.config.MinVersion = tls.VersionTLS12
+	serverConfig.config.MinVersion = tls.VersionGMSSL
 	return &serverCreds{
 		serverConfig: serverConfig,
 		logger:       logger}
@@ -72,14 +72,14 @@ func (t *TLSConfig) Config() tls.Config {
 	return tls.Config{}
 }
 
-func (t *TLSConfig) AddClientRootCA(cert *sm2.Certificate) {
+func (t *TLSConfig) AddClientRootCA(cert *gmx509.Certificate) {
 	t.lock.Lock()
 	defer t.lock.Unlock()
 
 	t.config.ClientCAs.AddCert(cert)
 }
 
-func (t *TLSConfig) SetClientCAs(certPool *sm2.CertPool) {
+func (t *TLSConfig) SetClientCAs(certPool *gmx509.CertPool) {
 	t.lock.Lock()
 	defer t.lock.Unlock()
 

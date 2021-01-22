@@ -9,11 +9,11 @@ package msp
 import (
 	"crypto"
 	"crypto/rand"
-	// "crypto/x509"
-	"github.com/jxu86/gmsm/sm2"
 	"encoding/hex"
 	"encoding/pem"
 	"fmt"
+	// "crypto/x509"
+	gmx509 "github.com/littlegirlpppp/gmsm/x509"
 	"sync"
 	"time"
 
@@ -32,7 +32,7 @@ type identity struct {
 	id *IdentityIdentifier
 
 	// cert contains the x.509 certificate that signs the public key of this instance
-	cert *sm2.Certificate
+	cert *gmx509.Certificate
 
 	// this is the public key of this instance
 	pk bccsp.Key
@@ -53,7 +53,7 @@ type identity struct {
 	validationErr error
 }
 
-func newIdentity(cert *sm2.Certificate, pk bccsp.Key, msp *bccspmsp) (Identity, error) {
+func newIdentity(cert *gmx509.Certificate, pk bccsp.Key, msp *bccspmsp) (Identity, error) {
 	if mspIdentityLogger.IsEnabledFor(zapcore.DebugLevel) {
 		mspIdentityLogger.Debugf("Creating identity instance for cert %s", certToPEM(cert))
 	}
@@ -234,7 +234,7 @@ type signingidentity struct {
 	signer crypto.Signer
 }
 
-func newSigningIdentity(cert *sm2.Certificate, pk bccsp.Key, signer crypto.Signer, msp *bccspmsp) (SigningIdentity, error) {
+func newSigningIdentity(cert *gmx509.Certificate, pk bccsp.Key, signer crypto.Signer, msp *bccspmsp) (SigningIdentity, error) {
 	//mspIdentityLogger.Infof("Creating signing identity instance for ID %s", id)
 	mspId, err := newIdentity(cert, pk, msp)
 	if err != nil {

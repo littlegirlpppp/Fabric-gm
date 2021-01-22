@@ -4,7 +4,7 @@ package mock
 import (
 	"sync"
 
-	"github.com/jxu86/sarama"
+
 )
 
 type SyncProducer struct {

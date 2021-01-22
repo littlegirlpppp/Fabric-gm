@@ -30,7 +30,7 @@ import (
 	"github.com/hyperledger/fabric/bccsp"
 	"github.com/hyperledger/fabric/bccsp/gm"
 	"github.com/hyperledger/fabric/bccsp/utils"
-	"github.com/jxu86/gmsm/sm2"
+	"github.com/littlegirlpppp/gmsm/sm2"
 )
 
 type CA struct {

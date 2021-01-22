@@ -9,7 +9,7 @@ package crypto
 import (
 	"bytes"
 	"encoding/pem"
-	"github.com/jxu86/gmsm/sm2"
+	gmx509 "github.com/littlegirlpppp/gmsm/x509"
 	"time"
 
 	"github.com/golang/protobuf/proto"
@@ -34,7 +34,7 @@ func certExpirationTime(pemBytes []byte) time.Time {
 		// If the identity isn't a PEM block, we make no decisions about the expiration time
 		return time.Time{}
 	}
-	cert, err := sm2.ParseCertificate(bl.Bytes)
+	cert, err := gmx509.ParseCertificate(bl.Bytes)
 	if err != nil {
 		return time.Time{}
 	}
@@ -137,9 +137,9 @@ func CertificatesWithSamePublicKey(der1, der2 []byte) error {
 
 // publicKeyFromCertificate returns the public key of the given ASN1 DER certificate.
 func publicKeyFromCertificate(der []byte) ([]byte, error) {
-	cert, err := sm2.ParseCertificate(der)
+	cert, err := gmx509.ParseCertificate(der)
 	if err != nil {
 		return nil, err
 	}
-	return sm2.MarshalPKIXPublicKey(cert.PublicKey)
+	return gmx509.MarshalPKIXPublicKey(cert.PublicKey)
 }

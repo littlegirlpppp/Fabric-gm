@@ -6,12 +6,11 @@ package localconfig
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/Shopify/sarama"
 	"path/filepath"
 	"strings"
 	"sync"
 	"time"
-
-	"github.com/jxu86/sarama"
 	bccsp "github.com/hyperledger/fabric/bccsp/factory"
 	"github.com/hyperledger/fabric/common/flogging"
 	"github.com/hyperledger/fabric/common/viperutil"

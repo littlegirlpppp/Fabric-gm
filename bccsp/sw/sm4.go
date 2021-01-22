@@ -17,7 +17,7 @@ package sw
 
 import (
 	"github.com/hyperledger/fabric/bccsp"
-	"github.com/jxu86/gmsm/sm4"
+	"github.com/littlegirlpppp/gmsm/sm4"
 )
 //todo：国密：增加gm
 // GetRandomBytes returns len random looking bytes

@@ -18,9 +18,9 @@ import (
 
 	"github.com/pkg/errors"
 	//todo：国密：sm2 credentials
-	"github.com/jxu86/gmsm/sm2"
-	// "github.com/jxu86/gmtls/gmcredentials"
-	// tls "github.com/jxu86/gmtls"
+	gmx509 "github.com/littlegirlpppp/gmsm/x509"
+	// "github.com/littlegirlpppp/gmsm/gmtls/gmcredentials"
+	// tls "github.com/littlegirlpppp/gmsm/gmtls"
 )
 
 type ConnectionSource struct {
@@ -33,7 +33,7 @@ type ConnectionSource struct {
 
 type Endpoint struct {
 	Address   string
-	CertPool  *sm2.CertPool // *x509.CertPool
+	CertPool  *gmx509.CertPool // *x509.CertPool
 	Refreshed chan struct{}
 }
 
@@ -152,10 +152,10 @@ func (cs *ConnectionSource) Update(globalAddrs []string, orgs map[string]Orderer
 
 	cs.allEndpoints = nil
 
-	globalCertPool := sm2.NewCertPool()
+	globalCertPool := gmx509.NewCertPool()
 
 	for orgName, org := range orgs {
-		certPool := sm2.NewCertPool()
+		certPool := gmx509.NewCertPool()
 		for _, rootCert := range org.RootCerts {
 			if hasOrgEndpoints {
 				if err := comm.AddPemToCertPool(rootCert, certPool); err != nil {

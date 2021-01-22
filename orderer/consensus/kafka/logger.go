@@ -8,10 +8,11 @@ package kafka
 
 import (
 	"fmt"
+	"github.com/Shopify/sarama"
 	"strings"
 	"sync"
 
-	"github.com/jxu86/sarama"
+
 	"github.com/hyperledger/fabric/common/flogging"
 	"go.uber.org/zap"
 )

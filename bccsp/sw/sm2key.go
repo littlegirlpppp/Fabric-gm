@@ -22,7 +22,8 @@ import (
 	"fmt"
 
 	"github.com/hyperledger/fabric/bccsp"
-	"github.com/jxu86/gmsm/sm2"
+	"github.com/littlegirlpppp/gmsm/sm2"
+	gmx509 "github.com/littlegirlpppp/gmsm/x509"
 )
 //todo：国密：增加gm
 type gmsm2PrivateKey struct {
@@ -75,7 +76,7 @@ type gmsm2PublicKey struct {
 // Bytes converts this key to its byte representation,
 // if this operation is allowed.
 func (k *gmsm2PublicKey) Bytes() (raw []byte, err error) {
-	raw, err = sm2.MarshalSm2PublicKey(k.pubKey)
+	raw, err = gmx509.MarshalSm2PublicKey(k.pubKey)
 	if err != nil {
 		return nil, fmt.Errorf("Failed marshalling key [%s]", err)
 	}

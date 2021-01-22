@@ -10,7 +10,7 @@ import (
 	"bytes"
 	"context"
 	// "crypto/tls"
-	tls "github.com/jxu86/gmtls"
+	tls "github.com/littlegirlpppp/gmsm/gmtls"
 	"encoding/hex"
 	"fmt"
 	"reflect"

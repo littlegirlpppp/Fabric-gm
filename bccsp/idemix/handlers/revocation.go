@@ -10,7 +10,8 @@ import (
 	"crypto/elliptic"
 	"crypto/sha256"
 	// "crypto/x509"
-	"github.com/jxu86/gmsm/sm2"
+	"github.com/littlegirlpppp/gmsm/sm2"
+	gmx509 "github.com/littlegirlpppp/gmsm/x509"
 	"encoding/pem"
 	"fmt"
 	"reflect"
@@ -82,7 +83,7 @@ func NewRevocationPublicKey(pubKey *sm2.PublicKey) *revocationPublicKey {
 // Bytes converts this key to its byte representation,
 // if this operation is allowed.
 func (k *revocationPublicKey) Bytes() (raw []byte, err error) {
-	raw, err = sm2.MarshalPKIXPublicKey(k.pubKey)
+	raw, err = gmx509.MarshalPKIXPublicKey(k.pubKey)
 	if err != nil {
 		return nil, fmt.Errorf("Failed marshalling key [%s]", err)
 	}
@@ -155,7 +156,7 @@ func (i *RevocationPublicKeyImporter) KeyImport(raw interface{}, opts bccsp.KeyI
 	if blockPub == nil {
 		return nil, errors.New("Failed to decode revocation ECDSA public key")
 	}
-	revocationPk, err := sm2.ParsePKIXPublicKey(blockPub.Bytes)
+	revocationPk, err := gmx509.ParsePKIXPublicKey(blockPub.Bytes)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to parse revocation ECDSA public key bytes")
 	}

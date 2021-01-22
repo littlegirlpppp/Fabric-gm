@@ -15,7 +15,7 @@ import (
 	"github.com/hyperledger/fabric/common/util"
 
 	// "google.golang.org/grpc/credentials"
-	credentials "github.com/jxu86/gmtls/gmcredentials"
+	credentials "github.com/littlegirlpppp/gmsm/gmtls/gmcredentials"
 	"google.golang.org/grpc/peer"
 )
 

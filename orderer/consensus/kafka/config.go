@@ -9,10 +9,10 @@ package kafka
 import (
 	// "crypto/tls"
 	// "crypto/x509"
-	"github.com/jxu86/sarama"
 	localconfig "github.com/hyperledger/fabric/orderer/common/localconfig"
-	"github.com/jxu86/gmsm/sm2"
-	tls "github.com/jxu86/gmtls"
+	"github.com/Shopify/sarama"
+	gmx509 "github.com/littlegirlpppp/gmsm/x509"
+	tls "github.com/littlegirlpppp/gmsm/gmtls"
 
 	
 )
@@ -44,23 +44,23 @@ func newBrokerConfig(
 	brokerConfig.Net.TLS.Enable = tlsConfig.Enabled
 	if brokerConfig.Net.TLS.Enable {
 		// create public/private key pair structure
-		keyPair, err := tls.X509KeyPair([]byte(tlsConfig.Certificate), []byte(tlsConfig.PrivateKey))
+		_, err := tls.X509KeyPair([]byte(tlsConfig.Certificate), []byte(tlsConfig.PrivateKey))
 		if err != nil {
 			logger.Panic("Unable to decode public/private key pair:", err)
 		}
 		// create root CA pool
-		rootCAs := sm2.NewCertPool()
+		rootCAs := gmx509.NewCertPool()
 		for _, certificate := range tlsConfig.RootCAs {
 			if !rootCAs.AppendCertsFromPEM([]byte(certificate)) {
 				logger.Panic("Unable to parse the root certificate authority certificates (Kafka.Tls.RootCAs)")
 			}
 		}
-		brokerConfig.Net.TLS.Config = &tls.Config{
-			Certificates: []tls.Certificate{keyPair},
-			RootCAs:      rootCAs,
-			MinVersion:   tls.VersionTLS12,
-			MaxVersion:   0, // Latest supported TLS version
-		}
+		//brokerConfig.Net.TLS.Config = &tls.Config{
+		//	Certificates: []tls.Certificate{keyPair},
+		//	RootCAs:      rootCAs,
+		//	MinVersion:   tls.VersionTLS12,
+		//	MaxVersion:   0, // Latest supported TLS version
+		//}
 	}
 	brokerConfig.Net.SASL.Enable = saslPlain.Enabled
 	if brokerConfig.Net.SASL.Enable {
@@ -83,7 +83,7 @@ func newBrokerConfig(
 	// the message before sending back an ACK to the sender.
 	brokerConfig.Producer.RequiredAcks = sarama.WaitForAll
 	// An esoteric setting required by the sarama library, see:
-	// https://github.com/jxu86/sarama/issues/816
+	// https://github.com/Shopify/sarama/issues/816
 	brokerConfig.Producer.Return.Successes = true
 
 	brokerConfig.Version = kafkaVersion

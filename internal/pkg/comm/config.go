@@ -9,8 +9,8 @@ package comm
 import (
 	// "crypto/tls"
 	// "crypto/x509"
-	"github.com/jxu86/gmsm/sm2"
-	tls "github.com/jxu86/gmtls"
+	gmx509 "github.com/littlegirlpppp/gmsm/x509"
+	tls "github.com/littlegirlpppp/gmsm/gmtls"
 	"time"
 
 	"github.com/hyperledger/fabric/common/flogging"
@@ -40,6 +40,7 @@ var (
 		tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
 		tls.TLS_RSA_WITH_AES_128_GCM_SHA256,
 		tls.TLS_RSA_WITH_AES_256_GCM_SHA384,
+		tls.GMTLS_SM2_WITH_SM4_SM3,
 	}
 	// default connection timeout
 	DefaultConnectionTimeout = 5 * time.Second
@@ -93,7 +94,7 @@ type SecureOptions struct {
 	// VerifyCertificate, if not nil, is called after normal
 	// certificate verification by either a TLS client or server.
 	// If it returns a non-nil error, the handshake is aborted and that error results.
-	VerifyCertificate func(rawCerts [][]byte, verifiedChains [][]*sm2.Certificate) error
+	VerifyCertificate func(rawCerts [][]byte, verifiedChains [][]*gmx509.Certificate) error
 	// PEM-encoded X509 public key to be used for TLS communication
 	Certificate []byte
 	// PEM-encoded private key to be used for TLS communication

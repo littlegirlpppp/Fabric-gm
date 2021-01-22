@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jxu86/sarama"
+
 	"github.com/hyperledger/fabric/common/flogging"
 	"github.com/onsi/gomega/gbytes"
 	"github.com/stretchr/testify/assert"

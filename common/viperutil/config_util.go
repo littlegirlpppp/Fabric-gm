@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
+	"github.com/Shopify/sarama"
 	"io/ioutil"
 	"math"
 	"reflect"
@@ -18,7 +19,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jxu86/sarama"
 	version "github.com/hashicorp/go-version"
 	"github.com/hyperledger/fabric/bccsp/factory"
 	"github.com/hyperledger/fabric/common/flogging"

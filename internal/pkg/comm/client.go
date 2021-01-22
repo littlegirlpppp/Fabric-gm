@@ -9,10 +9,10 @@ package comm
 import (
 	"context"
 
-	"github.com/jxu86/gmsm/sm2"
+	gmx509 "github.com/littlegirlpppp/gmsm/x509"
 
-	// credentials "github.com/jxu86/gmtls/gmcredentials"
-	tls "github.com/jxu86/gmtls"
+	// credentials "github.com/littlegirlpppp/gmsm/gmtls/gmcredentials"
+	tls "github.com/littlegirlpppp/gmsm/gmtls"
 	// "crypto/tls"
 	// "crypto/x509"
 	"time"
@@ -75,11 +75,12 @@ func (client *GRPCClient) parseSecureOptions(opts SecureOptions) error {
 	}
 
 	client.tlsConfig = &tls.Config{
+		GMSupport: &tls.GMSupport{},
 		VerifyPeerCertificate: opts.VerifyCertificate,
-		MinVersion:            tls.VersionTLS12,
+		MinVersion:            tls.VersionGMSSL,
 	}
 	if len(opts.ServerRootCAs) > 0 {
-		client.tlsConfig.RootCAs = sm2.NewCertPool()
+		client.tlsConfig.RootCAs = gmx509.NewCertPool()
 		for _, certBytes := range opts.ServerRootCAs {
 			err := AddPemToCertPool(certBytes, client.tlsConfig.RootCAs)
 			if err != nil {
@@ -152,7 +153,7 @@ func (client *GRPCClient) SetServerRootCAs(serverRoots [][]byte) error {
 
 	// NOTE: if no serverRoots are specified, the current cert pool will be
 	// replaced with an empty one
-	certPool := sm2.NewCertPool()
+	certPool := gmx509.NewCertPool()
 	for _, root := range serverRoots {
 		err := AddPemToCertPool(root, certPool)
 		if err != nil {
@@ -171,7 +172,7 @@ func ServerNameOverride(name string) TLSOption {
 	}
 }
 
-func CertPoolOverride(pool *sm2.CertPool) TLSOption {
+func CertPoolOverride(pool *gmx509.CertPool) TLSOption {
 	return func(tlsConfig *tls.Config) {
 		tlsConfig.RootCAs = pool
 	}

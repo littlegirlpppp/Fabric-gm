@@ -7,8 +7,8 @@ SPDX-License-Identifier: Apache-2.0
 package operations
 
 import (
-	"github.com/jxu86/gmsm/sm2"
-	tls "github.com/jxu86/gmtls"
+	tls "github.com/littlegirlpppp/gmsm/gmtls"
+	gmx509 "github.com/littlegirlpppp/gmsm/x509"
 	"io/ioutil"
 
 	"github.com/hyperledger/fabric/internal/pkg/comm"
@@ -30,7 +30,7 @@ func (t TLS) Config() (*tls.Config, error) {
 		if err != nil {
 			return nil, err
 		}
-		caCertPool := sm2.NewCertPool()
+		caCertPool := gmx509.NewCertPool()
 		for _, caPath := range t.ClientCACertFiles {
 			caPem, err := ioutil.ReadFile(caPath)
 			if err != nil {

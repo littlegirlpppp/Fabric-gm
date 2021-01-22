@@ -8,7 +8,7 @@ package operations
 
 import (
 	"context"
-	tls "github.com/jxu86/gmtls"
+	tls "github.com/littlegirlpppp/gmsm/gmtls"
 	"net"
 	"net/http"
 	"os"

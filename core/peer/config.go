@@ -21,7 +21,7 @@ package peer
 
 import (
 	// "crypto/tls"
-	tls "github.com/jxu86/gmtls"
+	tls "github.com/littlegirlpppp/gmsm/gmtls"
 	"fmt"
 	"io/ioutil"
 	"net"
