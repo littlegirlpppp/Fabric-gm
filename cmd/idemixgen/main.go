@@ -16,11 +16,12 @@ import (
 	// "crypto/x509"
 	"encoding/pem"
 	"fmt"
+	"github.com/littlegirlpppp/gmsm/sm2"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 
-	"github.com/littlegirlpppp/gmsm/sm2"
+	gmx509 "github.com/littlegirlpppp/gmsm/x509"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/hyperledger/fabric/common/tools/idemixgen/idemixca"
@@ -66,12 +67,12 @@ func main() {
 		revocationKey, err := idemix.GenerateLongTermRevocationKey()
 		handleError(err)
 		// encodedRevocationSK, err := x509.MarshalECPrivateKey(revocationKey)
-		encodedRevocationSK, err := sm2.MarshalSm2UnecryptedPrivateKey(revocationKey)
+		encodedRevocationSK, err := gmx509.MarshalSm2UnecryptedPrivateKey(revocationKey)
 		handleError(err)
 		pemEncodedRevocationSK := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: encodedRevocationSK})
 		handleError(err)
 		// encodedRevocationPK, err := x509.MarshalPKIXPublicKey(revocationKey.Public())
-		encodedRevocationPK, err := sm2.MarshalPKIXPublicKey(revocationKey.Public())
+		encodedRevocationPK, err := gmx509.MarshalPKIXPublicKey(revocationKey.Public())
 		handleError(err)
 		pemEncodedRevocationPK := pem.EncodeToMemory(&pem.Block{Type: "PUBLIC KEY", Bytes: encodedRevocationPK})
 
@@ -174,7 +175,7 @@ func readRevocationKey() *sm2.PrivateKey {
 		handleError(errors.Errorf("failed to decode ECDSA private key"))
 	}
 	// key, err := x509.ParseECPrivateKey(block.Bytes)
-	key, err := sm2.ParseSm2PrivateKey(block.Bytes)
+	key, err := gmx509.ParseSm2PrivateKey(block.Bytes)
 	handleError(err)
 
 	return key
