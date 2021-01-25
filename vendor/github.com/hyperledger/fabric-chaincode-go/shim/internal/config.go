@@ -4,11 +4,11 @@
 package internal
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"github.com/jxu86/gmsm/sm2"
-	tls "github.com/jxu86/gmtls"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -116,9 +116,9 @@ func LoadTLSConfig(isserver bool, key, cert, root []byte) (*tls.Config, error) {
 		return nil, errors.New("failed to parse client key pair")
 	}
 
-	var rootCertPool *sm2.CertPool
+	var rootCertPool *x509.CertPool
 	if root != nil {
-		rootCertPool = sm2.NewCertPool()
+		rootCertPool = x509.NewCertPool()
 		if ok := rootCertPool.AppendCertsFromPEM(root); !ok {
 			return nil, errors.New("failed to load root cert file")
 		}

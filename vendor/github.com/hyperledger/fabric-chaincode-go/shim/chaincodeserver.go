@@ -4,7 +4,7 @@
 package shim
 
 import (
-	tls "github.com/littlegirlpppp/gmsm/gmtls"
+	"crypto/tls"
 	"errors"
 
 	"github.com/hyperledger/fabric-chaincode-go/shim/internal"

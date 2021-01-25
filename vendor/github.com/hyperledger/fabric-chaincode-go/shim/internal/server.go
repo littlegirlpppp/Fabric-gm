@@ -4,13 +4,13 @@
 package internal
 
 import (
+	"crypto/tls"
 	"errors"
-	tls "github.com/jxu86/gmtls"
 	"net"
 	"time"
 
-	credentials "github.com/jxu86/gmtls/gmcredentials"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/keepalive"
 )
 

@@ -2,13 +2,14 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package sm2
+package x509
 
 import (
 	"crypto/elliptic"
 	"encoding/asn1"
 	"errors"
 	"fmt"
+	"github.com/littlegirlpppp/gmsm/sm2"
 	"math/big"
 )
 
@@ -28,12 +29,12 @@ type ecPrivateKey struct {
 }
 
 // ParseECPrivateKey parses an ASN.1 Elliptic Curve Private Key Structure.
-func ParseECPrivateKey(der []byte) (*PrivateKey, error) {
+func ParseECPrivateKey(der []byte) (*sm2.PrivateKey, error) {
 	return parseECPrivateKey(nil, der)
 }
 
 // MarshalECPrivateKey marshals an EC private key into ASN.1, DER format.
-func MarshalECPrivateKey(key *PrivateKey) ([]byte, error) {
+func MarshalECPrivateKey(key *sm2.PrivateKey) ([]byte, error) {
 	oid, ok := oidFromNamedCurve(key.Curve)
 	if !ok {
 		return nil, errors.New("x509: unknown elliptic curve")
@@ -44,7 +45,7 @@ func MarshalECPrivateKey(key *PrivateKey) ([]byte, error) {
 
 // marshalECPrivateKey marshals an EC private key into ASN.1, DER format and
 // sets the curve ID to the given OID, or omits it if OID is nil.
-func marshalECPrivateKeyWithOID(key *PrivateKey, oid asn1.ObjectIdentifier) ([]byte, error) {
+func marshalECPrivateKeyWithOID(key *sm2.PrivateKey, oid asn1.ObjectIdentifier) ([]byte, error) {
 	privateKeyBytes := key.D.Bytes()
 	paddedPrivateKey := make([]byte, (key.Curve.Params().N.BitLen()+7)/8)
 	copy(paddedPrivateKey[len(paddedPrivateKey)-len(privateKeyBytes):], privateKeyBytes)
@@ -61,7 +62,7 @@ func marshalECPrivateKeyWithOID(key *PrivateKey, oid asn1.ObjectIdentifier) ([]b
 // The OID for the named curve may be provided from another source (such as
 // the PKCS8 container) - if it is provided then use this instead of the OID
 // that may exist in the EC private key structure.
-func parseECPrivateKey(namedCurveOID *asn1.ObjectIdentifier, der []byte) (key *PrivateKey, err error) {
+func parseECPrivateKey(namedCurveOID *asn1.ObjectIdentifier, der []byte) (key *sm2.PrivateKey, err error) {
 	var privKey ecPrivateKey
 	if _, err := asn1.Unmarshal(der, &privKey); err != nil {
 		return nil, errors.New("x509: failed to parse EC private key: " + err.Error())
@@ -85,7 +86,7 @@ func parseECPrivateKey(namedCurveOID *asn1.ObjectIdentifier, der []byte) (key *P
 	if k.Cmp(curveOrder) >= 0 {
 		return nil, errors.New("x509: invalid elliptic curve private key value")
 	}
-	priv := new(PrivateKey)
+	priv := new(sm2.PrivateKey)
 	priv.Curve = curve
 	priv.D = k
 
