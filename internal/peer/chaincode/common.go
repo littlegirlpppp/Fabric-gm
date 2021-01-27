@@ -18,7 +18,7 @@ import (
 	"sync"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/jxu86/fabric-chaincode-go/shim"
+	"github.com/littlegirlpppp/fabric-chaincode-go/shim"
 	pcommon "github.com/hyperledger/fabric-protos-go/common"
 	ab "github.com/hyperledger/fabric-protos-go/orderer"
 	pb "github.com/hyperledger/fabric-protos-go/peer"

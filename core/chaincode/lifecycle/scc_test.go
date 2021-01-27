@@ -14,7 +14,7 @@ import (
 	"github.com/hyperledger/fabric/core/ledger"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/jxu86/fabric-chaincode-go/shim"
+	"github.com/littlegirlpppp/fabric-chaincode-go/shim"
 	mspprotos "github.com/hyperledger/fabric-protos-go/msp"
 	pb "github.com/hyperledger/fabric-protos-go/peer"
 	lb "github.com/hyperledger/fabric-protos-go/peer/lifecycle"

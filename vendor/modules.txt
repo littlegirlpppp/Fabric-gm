@@ -140,10 +140,6 @@ github.com/hpcloud/tail/winfile
 ## explicit
 github.com/hyperledger/fabric-amcl/amcl
 github.com/hyperledger/fabric-amcl/amcl/FP256BN
-# github.com/hyperledger/fabric-chaincode-go v0.0.0-20201119163726-f8ef75b17719
-## explicit
-github.com/hyperledger/fabric-chaincode-go/shim
-github.com/hyperledger/fabric-chaincode-go/shim/internal
 # github.com/hyperledger/fabric-config v0.0.7
 ## explicit
 github.com/hyperledger/fabric-config/configtx
@@ -181,11 +177,6 @@ github.com/inconshreveable/mousetrap
 # github.com/jcmturner/gofork v1.0.0
 github.com/jcmturner/gofork/encoding/asn1
 github.com/jcmturner/gofork/x/crypto/pbkdf2
-# github.com/jxu86/fabric-chaincode-go v1.0.4-gm => /Users/sunbo/Desktop/FabricGM/fabric-chaincode-go
-## explicit
-github.com/jxu86/fabric-chaincode-go/pkg/statebased
-github.com/jxu86/fabric-chaincode-go/shim
-github.com/jxu86/fabric-chaincode-go/shimtest
 # github.com/klauspost/compress v1.11.0
 github.com/klauspost/compress/fse
 github.com/klauspost/compress/huff0
@@ -202,7 +193,13 @@ github.com/kr/logfmt
 github.com/kr/pretty
 # github.com/kr/text v0.2.0
 github.com/kr/text
-# github.com/littlegirlpppp/gmsm v0.0.0-20210121135329-557133f2d373 => /Users/sunbo/Desktop/FabricGM/tjfoc-gm
+# github.com/littlegirlpppp/fabric-chaincode-go v0.0.0-20210125041130-7bef1c089d14
+## explicit
+github.com/littlegirlpppp/fabric-chaincode-go/pkg/statebased
+github.com/littlegirlpppp/fabric-chaincode-go/shim
+github.com/littlegirlpppp/fabric-chaincode-go/shim/internal
+github.com/littlegirlpppp/fabric-chaincode-go/shimtest
+# github.com/littlegirlpppp/gmsm v0.0.0-20210125031919-ab0c0a65837c => /Users/sunbo/Desktop/FabricGM/tjfoc-gm
 ## explicit
 github.com/littlegirlpppp/gmsm/gmtls
 github.com/littlegirlpppp/gmsm/gmtls/gmcredentials
@@ -535,4 +532,3 @@ gopkg.in/yaml.v3
 # golang.org/x/sys => golang.org/x/sys v0.0.0-20190920190810-ef0ce1748380
 # github.com/golang/protobuf => github.com/golang/protobuf v1.3.3
 # github.com/littlegirlpppp/gmsm => /Users/sunbo/Desktop/FabricGM/tjfoc-gm
-# github.com/jxu86/fabric-chaincode-go => /Users/sunbo/Desktop/FabricGM/fabric-chaincode-go

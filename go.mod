@@ -7,10 +7,7 @@ replace golang.org/x/sys => golang.org/x/sys v0.0.0-20190920190810-ef0ce1748380
 
 replace github.com/golang/protobuf => github.com/golang/protobuf v1.3.3
 
-replace (
-	github.com/jxu86/fabric-chaincode-go => /Users/sunbo/Desktop/FabricGM/fabric-chaincode-go
-	github.com/littlegirlpppp/gmsm => /Users/sunbo/Desktop/FabricGM/tjfoc-gm
-)
+replace github.com/littlegirlpppp/gmsm => /Users/sunbo/Desktop/FabricGM/tjfoc-gm
 
 require (
 	code.cloudfoundry.org/clock v1.0.0
@@ -35,14 +32,13 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.1.0
 	github.com/hashicorp/go-version v1.2.0
 	github.com/hyperledger/fabric-amcl v0.0.0-20200128223036-d1aa2665426a
-	github.com/hyperledger/fabric-chaincode-go v0.0.0-20201119163726-f8ef75b17719 // indirect
 	github.com/hyperledger/fabric-config v0.0.7
 	github.com/hyperledger/fabric-lib-go v1.0.0
 	github.com/hyperledger/fabric-protos-go v0.0.0-20201028172056-a3136dde2354
-	github.com/jxu86/fabric-chaincode-go v1.0.4-gm
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/kr/pretty v0.2.1
-	github.com/littlegirlpppp/gmsm v0.0.0-20210121135329-557133f2d373
+	github.com/littlegirlpppp/fabric-chaincode-go v0.0.0-20210125041130-7bef1c089d14
+	github.com/littlegirlpppp/gmsm v0.0.0-20210125031919-ab0c0a65837c
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mattn/go-runewidth v0.0.4 // indirect
 	github.com/miekg/pkcs11 v1.0.3
