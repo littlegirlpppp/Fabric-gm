@@ -1174,3 +1174,5 @@ func sm2P256Scalar8(in sm2P256FieldElement) sm2P256FieldElement {
 
 	return sm2P256ReduceCarry(in, carry)	
 }
+
+

@@ -34,16 +34,6 @@ var (
 	default_uid = []byte{0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38}
 )
 
-type PublicKey struct {
-	elliptic.Curve
-	X, Y *big.Int
-}
-
-type PrivateKey struct {
-	PublicKey
-	D *big.Int
-}
-
 type sm2Signature struct {
 	R, S *big.Int
 }
@@ -121,119 +111,6 @@ func KeyExchangeA(klen int, ida, idb []byte, priA *PrivateKey, pubB *PublicKey, 
 
 //****************************************************************************//
 
-func Sm2Sign(priv *PrivateKey, msg, uid []byte, random io.Reader) (r, s *big.Int, err error) {
-	digest, err := priv.PublicKey.Sm3Digest(msg, uid)
-	if err != nil {
-		return nil, nil, err
-	}
-	e := new(big.Int).SetBytes(digest)
-	c := priv.PublicKey.Curve
-	N := c.Params().N
-	if N.Sign() == 0 {
-		return nil, nil, errZeroParam
-	}
-	var k *big.Int
-	for { // 调整算法细节以实现SM2
-		for {
-			k, err = randFieldElement(c, random)
-			if err != nil {
-				r = nil
-				return
-			}
-			r, _ = priv.Curve.ScalarBaseMult(k.Bytes())
-			r.Add(r, e)
-			r.Mod(r, N)
-			if r.Sign() != 0 {
-				if t := new(big.Int).Add(r, k); t.Cmp(N) != 0 {
-					break
-				}
-			}
-
-		}
-		rD := new(big.Int).Mul(priv.D, r)
-		s = new(big.Int).Sub(k, rD)
-		d1 := new(big.Int).Add(priv.D, one)
-		d1Inv := new(big.Int).ModInverse(d1, N)
-		s.Mul(s, d1Inv)
-		s.Mod(s, N)
-		if s.Sign() != 0 {
-			break
-		}
-	}
-	return
-}
-func Sm2Verify(pub *PublicKey, msg, uid []byte, r, s *big.Int) bool {
-	c := pub.Curve
-	N := c.Params().N
-	one := new(big.Int).SetInt64(1)
-	if r.Cmp(one) < 0 || s.Cmp(one) < 0 {
-		return false
-	}
-	if r.Cmp(N) >= 0 || s.Cmp(N) >= 0 {
-		return false
-	}
-	if len(uid) == 0 {
-		uid = default_uid
-	}
-	za, err := ZA(pub, uid)
-	if err != nil {
-		return false
-	}
-	e, err := msgHash(za, msg)
-	if err != nil {
-		return false
-	}
-	t := new(big.Int).Add(r, s)
-	t.Mod(t, N)
-	if t.Sign() == 0 {
-		return false
-	}
-	var x *big.Int
-	x1, y1 := c.ScalarBaseMult(s.Bytes())
-	x2, y2 := c.ScalarMult(pub.X, pub.Y, t.Bytes())
-	x, _ = c.Add(x1, y1, x2, y2)
-
-	x.Add(x, e)
-	x.Mod(x, N)
-	return x.Cmp(r) == 0
-}
-
-/*
-    za, err := ZA(pub, uid)
-	if err != nil {
-		return
-	}
-	e, err := msgHash(za, msg)
-	hash=e.getBytes()
-*/
-func Verify(pub *PublicKey, hash []byte, r, s *big.Int) bool {
-	c := pub.Curve
-	N := c.Params().N
-
-	if r.Sign() <= 0 || s.Sign() <= 0 {
-		return false
-	}
-	if r.Cmp(N) >= 0 || s.Cmp(N) >= 0 {
-		return false
-	}
-
-	// 调整算法细节以实现SM2
-	t := new(big.Int).Add(r, s)
-	t.Mod(t, N)
-	if t.Sign() == 0 {
-		return false
-	}
-
-	var x *big.Int
-	x1, y1 := c.ScalarBaseMult(s.Bytes())
-	x2, y2 := c.ScalarMult(pub.X, pub.Y, t.Bytes())
-	x, _ = c.Add(x1, y1, x2, y2)
-
-	e := new(big.Int).SetBytes(hash)
-	x.Add(x, e)
-	x.Mod(x, N)
-	return x.Cmp(r) == 0
-}
 
 /*
  * sm2密文结构如下:
@@ -583,30 +460,6 @@ func randFieldElement(c elliptic.Curve, random io.Reader) (k *big.Int, err error
 	k.Mod(k, n)
 	k.Add(k, one)
 	return
-}
-
-func GenerateKey(random io.Reader) (*PrivateKey, error) {
-	c := P256Sm2()
-	if random == nil {
-		random = rand.Reader //If there is no external trusted random source,please use rand.Reader to instead of it.
-	}
-	params := c.Params()
-	b := make([]byte, params.BitSize/8+8)
-	_, err := io.ReadFull(random, b)
-	if err != nil {
-		return nil, err
-	}
-
-	k := new(big.Int).SetBytes(b)
-	n := new(big.Int).Sub(params.N, two)
-	k.Mod(k, n)
-	k.Add(k, one)
-	priv := new(PrivateKey)
-	priv.PublicKey.Curve = c
-	priv.D = k
-	priv.PublicKey.X, priv.PublicKey.Y = c.ScalarBaseMult(k.Bytes())
-
-	return priv, nil
 }
 
 type zr struct {

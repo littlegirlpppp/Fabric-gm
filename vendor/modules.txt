@@ -130,6 +130,9 @@ github.com/hashicorp/go-uuid
 # github.com/hashicorp/go-version v1.2.0
 ## explicit
 github.com/hashicorp/go-version
+# github.com/hashicorp/golang-lru v0.5.4
+github.com/hashicorp/golang-lru
+github.com/hashicorp/golang-lru/simplelru
 # github.com/hpcloud/tail v1.0.0
 github.com/hpcloud/tail
 github.com/hpcloud/tail/ratelimiter
@@ -310,6 +313,8 @@ github.com/spf13/pflag
 # github.com/spf13/viper v0.0.0-20150908122457-1967d93db724
 ## explicit
 github.com/spf13/viper
+# github.com/status-im/keycard-go v0.0.0-20200402102358-957c09536969
+github.com/status-im/keycard-go/hexutils
 # github.com/stretchr/objx v0.1.1
 github.com/stretchr/objx
 # github.com/stretchr/testify v1.6.1
