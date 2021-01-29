@@ -83,7 +83,7 @@ func newCertKeyPair(isCA bool, isServer bool, host string, certSigner crypto.Sig
 		parent = &template
 		certSigner = privateKey
 	}
-	rawBytes, err := gmx509.CreateCertificate( &template, parent, &privateKey.PublicKey, certSigner)
+	rawBytes, err := gmx509.CreateCertificate(&template, parent, &privateKey.PublicKey, certSigner)
 	if err != nil {
 		return nil, err
 	}

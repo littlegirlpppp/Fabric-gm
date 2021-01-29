@@ -8,7 +8,6 @@ package comm
 
 import (
 	"context"
-
 	gmx509 "github.com/littlegirlpppp/gmsm/x509"
 
 	// credentials "github.com/littlegirlpppp/gmsm/gmtls/gmcredentials"
