@@ -18,7 +18,6 @@ package gm
 import (
 	"crypto/elliptic"
 	"crypto/sha256"
-	"errors"
 	"fmt"
 
 	"github.com/hyperledger/fabric/bccsp"
@@ -33,7 +32,11 @@ type gmsm2PrivateKey struct {
 // Bytes converts this key to its byte representation,
 // if this operation is allowed.
 func (k *gmsm2PrivateKey) Bytes() (raw []byte, err error) {
-	return nil, errors.New("Not supported.")
+	raw, err = gmx509.MarshalSm2PrivateKey(k.privKey, nil)
+	if err != nil {
+		return nil, fmt.Errorf("Failed marshalling key [%s]", err)
+	}
+	return
 }
 
 // SKI returns the subject key identifier of this key.
@@ -114,4 +117,9 @@ func (k *gmsm2PublicKey) Private() bool {
 // This method returns an error in symmetric key schemes.
 func (k *gmsm2PublicKey) PublicKey() (bccsp.Key, error) {
 	return k, nil
+}
+type gmsm2Decryptor struct{}
+
+func (*gmsm2Decryptor) Decrypt(k bccsp.Key, ciphertext []byte, opts bccsp.DecrypterOpts) (plaintext []byte, err error) {
+	return sm2.Decrypt(k.(*gmsm2PrivateKey).privKey, ciphertext)
 }

@@ -71,6 +71,7 @@ func New(securityLevel int, hashFamily string, keyStore bccsp.KeyStore) (bccsp.B
 	// Set the decryptors
 	decryptors := make(map[reflect.Type]Decryptor)
 	decryptors[reflect.TypeOf(&gmsm4PrivateKey{})] = &gmsm4Decryptor{} //sm4 解密选项
+	decryptors[reflect.TypeOf(&gmsm2PrivateKey{})] = &gmsm2Decryptor{} //sm4 解密选项
 
 	// Set the signers
 	signers := make(map[reflect.Type]Signer)

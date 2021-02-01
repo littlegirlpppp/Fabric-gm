@@ -45,26 +45,23 @@ func GetRandomBytes(len int) ([]byte, error) {
 
 // AESCBCPKCS7Encrypt combines CBC encryption and PKCS7 padding
 func SM4Encrypt(key, src []byte) ([]byte, error) {
-	// // First pad
-	// tmp := pkcs7Padding(src)
-
-	// // Then encrypt
-	// return aesCBCEncrypt(key, tmp)
 	dst := make([]byte, len(src))
-	sm4.EncryptBlock(key, dst, src)
+	cipher, err := sm4.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	cipher.Encrypt(dst, src)
 	return dst, nil
 }
 
 // AESCBCPKCS7Decrypt combines CBC decryption and PKCS7 unpadding
 func SM4Decrypt(key, src []byte) ([]byte, error) {
-	// First decrypt
-	// pt, err := aesCBCDecrypt(key, src)
-	// if err == nil {
-	// 	return pkcs7UnPadding(pt)
-	// }
-
+	cipher, err := sm4.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
 	dst := make([]byte, len(src))
-	sm4.DecryptBlock(key, dst, src)
+	cipher.Decrypt(dst, src)
 	return dst, nil
 }
 

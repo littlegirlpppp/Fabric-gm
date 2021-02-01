@@ -90,26 +90,15 @@ func NewCA(
 	template.Subject = subject
 	template.SubjectKeyId =priv.SKI()
 
-	// x509Cert, err := genCertificateECDSA(
-	// 	baseDir,
-	// 	name,
-	// 	&template,
-	// 	&template,
-	// 	&priv.PublicKey,
-	// 	priv,
-	// )
 	sm2cert := gm.ParseX509Certificate2Sm2(&template)
 	sm2cert.PublicKey = sm2PubKey
+	sm2cert.SignatureAlgorithm = gmx509.SM2WithSM3
 	x509Cert, err := genCertificateGMSM2(baseDir, name, sm2cert, sm2cert, sm2PubKey, priv)
 	if err != nil {
 		return nil, err
 	}
 	ca = &CA{
 		Name: name,
-		// Signer: &csp.ECDSASigner{
-		// 	PrivateKey: priv,
-		// },
-		// SignCert:           x509Cert,
 		SignSm2Cert:        x509Cert,
 		Sm2Key:             priv,
 		Country:            country,
@@ -163,16 +152,9 @@ func (ca *CA) SignCertificate(
 		}
 	}
 
-	// cert, err := genCertificateECDSA(
-	// 	baseDir,
-	// 	name,
-	// 	&template,
-	// 	ca.SignCert,
-	// 	pub,
-	// 	ca.Signer,
-	// )
 	template.PublicKey = pub
 	sm2Tpl := gm.ParseX509Certificate2Sm2(&template)
+	sm2Tpl.SignatureAlgorithm =gmx509.SM2WithSM3
 	cert, err := genCertificateGMSM2(baseDir, name, sm2Tpl, ca.SignSm2Cert, pub, ca.Sm2Key)
 
 	if err != nil {
@@ -260,18 +242,10 @@ func genCertificateGMSM2(baseDir, name string, template, parent *gmx509.Certific
 	fileName := filepath.Join(baseDir, name+"-cert.pem")
 	err = ioutil.WriteFile(fileName, certBytes, os.FileMode(0666))
 	fmt.Println("fileName:",fileName)
-	// certFile, err := os.Create(fileName)
-	// if err != nil {
-	// 	return nil, err
-	// }
 
-	// // pem encode the cert
-	// err = pem.Encode(certFile, &pem.Block{Type: "CERTIFICATE", Bytes: certBytes})
-	// certFile.Close()
 	if err != nil {
 		return nil, err
 	}
-	//x509Cert, err := sm2.ReadCertificateFromPem(fileName)
 
 	x509Cert, err := gmx509.ReadCertificateFromMem(certBytes)
 	if err != nil {

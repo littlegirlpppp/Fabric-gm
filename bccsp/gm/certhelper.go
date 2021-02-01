@@ -16,67 +16,33 @@ limitations under the License.
 package gm
 
 import (
+	"crypto"
 	"crypto/rand"
 	"crypto/x509"
+	"github.com/hyperledger/fabric/bccsp"
 	"io"
 	"math/big"
 
-	"github.com/hyperledger/fabric/bccsp"
 	"github.com/littlegirlpppp/gmsm/sm2"
 	gmx509 "github.com/littlegirlpppp/gmsm/x509"
 )
-//todo：国密：增加gm
-// //调用SM2接口生成SM2证书
-// func CreateCertificateToMem(template, parent *x509.Certificate,key bccsp.Key) (cert []byte,err error) {
-// 	pk := key.(*gmsm2PrivateKey).privKey
-// 	bigint := getRandBigInt()
-// 	if(template.SerialNumber == nil){
-// 		template.SerialNumber = bigint
-// 	}
-// 	if parent.SerialNumber == nil{
-// 		parent.SerialNumber = bigint
-// 	}
-
-// 	sm2Temcert := ParseX509Certificate2Sm2(template)
-// 	sm2Parcert := ParseX509Certificate2Sm2(parent)
-// 	switch template.PublicKey.(type){
-// 	case sm2.PublicKey:
-// 		cert, err = sm2.CreateCertificateToMem(sm2Temcert,sm2Parcert, template.PublicKey.(*sm2.PublicKey),pk)
-// 		return
-// 	default:
-// 		return nil ,fmt.Errorf("gm certhelper not sm2.PublicKey")
-// 	}
-// }
-
-// //调用SM2接口生成SM2证书请求
-// func CreateCertificateRequestToMem(certificateRequest *x509.CertificateRequest,key bccsp.Key) (csr []byte,err error) {
-// 	pk := key.(*gmsm2PrivateKey).privKey
-// 	sm2Req := ParseX509CertificateRequest2Sm2(certificateRequest)
-// 	csr,err = sm2.CreateCertificateRequestToMem(sm2Req,pk)
-// 	return
-// }
 
 //调用SM2接口生成SM2证书
-func CreateCertificateToMem(template, parent *gmx509.Certificate, key bccsp.Key) (cert []byte, err error) {
-	pk := key.(*gmsm2PrivateKey).privKey
-
-	pub, a := template.PublicKey.(*sm2.PublicKey)
-	if a {
-		var puk sm2.PublicKey
-
-		puk.Curve = sm2.P256Sm2()
-		puk.X = pub.X
-		puk.Y = pub.Y
-		cert, err = gmx509.CreateCertificateToMem(template, parent, &puk, pk)
-
+func CreateCertificateToMem(template, parent *gmx509.Certificate,signer bccsp.Key) (cert []byte, err error) {
+	pk := signer.(*gmsm2PrivateKey).privKey
+	pub := template.PublicKey.(*sm2.PublicKey)
+	var puk = sm2.PublicKey{
+		Curve: sm2.P256Sm2(),
+		X:     pub.X,
+		Y:     pub.Y,
 	}
+	cert, err = gmx509.CreateCertificateToMem(template, parent, &puk, pk)
 	return
 }
 
 //调用SM2接口生成SM2证书请求
-func CreateSm2CertificateRequestToMem(certificateRequest *gmx509.CertificateRequest, key bccsp.Key) (csr []byte, err error) {
-	pk := key.(*gmsm2PrivateKey).privKey
-	csr, err = gmx509.CreateCertificateRequestToMem(certificateRequest, pk)
+func CreateSm2CertificateRequestToMem(certificateRequest *gmx509.CertificateRequest, signer crypto.Signer) (csr []byte, err error) {
+	csr, err = gmx509.CreateCertificateRequestToPem(certificateRequest, signer)
 	return
 }
 

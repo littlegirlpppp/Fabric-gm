@@ -126,24 +126,6 @@ func GeneratePrivateKey(keystorePath string) (bccsp.Key, error) {
 	if err != nil {
 		return nil, errors.WithMessage(err, "failed to generate private key")
 	}
-
-	// pkcs8Encoded, err := x509.MarshalPKCS8PrivateKey(priv)
-	// pkcs8Encoded, err := sm2.MarshalSm2UnecryptedPrivateKey(priv)
-	// k, err:= utils.PrivateKeyToPEM(priv, nil)
-	// sm2.WritePrivateKeytoMem(k, nil)
-
-	// if err != nil {
-	// 	return nil, errors.WithMessage(err, "failed to marshal private key")
-	// }
-
-	// pemEncoded := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: pkcs8Encoded})
-
-	// keyFile := filepath.Join(keystorePath, "priv_sk")
-	// err = ioutil.WriteFile(keyFile, pemEncoded, 0600)
-	// if err != nil {
-	// 	return nil, errors.WithMessagef(err, "failed to save private key to file %s", keyFile)
-	// }
-
 	return priv, err
 }
 

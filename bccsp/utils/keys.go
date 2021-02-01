@@ -150,7 +150,7 @@ func PrivateKeyToPEM(privateKey interface{}, pwd []byte) ([]byte, error) {
 		if k == nil {
 			return nil, errors.New("Invalid sm2 private key. It must be different from nil.")
 		}
-		return gmx509.WritePrivateKeytoMem(k, nil)
+		return gmx509.WritePrivateKeyToPem(k, nil)
 	default:
 		return nil, errors.New("Invalid key type. It must be *ecdsa.PrivateKey or *rsa.PrivateKey")
 	}
@@ -191,7 +191,7 @@ func PrivateKeyToEncryptedPEM(privateKey interface{}, pwd []byte) ([]byte, error
 			return nil, errors.New("Invalid sm2 private key. It must be different from nil.")
 		}
 
-		return gmx509.WritePrivateKeytoMem(k, pwd)
+		return gmx509.WritePrivateKeyToPem(k, pwd)
 	default:
 		return nil, errors.New("Invalid key type. It must be *ecdsa.PrivateKey")
 	}
@@ -488,9 +488,10 @@ func DERToPublicKey(raw []byte) (pub interface{}, err error) {
 	}
 
 	// key, err := x509.ParsePKIXPublicKey(raw)
-	key, err1 := x509.ParsePKIXPublicKey(raw)
+	key, err1 := gmx509.ParsePKIXPublicKey(raw)
 	if err1 != nil {
 		key, err = gmx509.ParseSm2PublicKey(raw)
 	}
 	return key, err
 }
+
