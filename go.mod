@@ -11,6 +11,7 @@ replace github.com/littlegirlpppp/gmsm => /Users/sunbo/Desktop/FabricGM/tjfoc-gm
 
 require (
 	code.cloudfoundry.org/clock v1.0.0
+	github.com/Hyperledger-TWGC/tjfoc-gm v1.4.0 // indirect
 	github.com/Knetic/govaluate v3.0.0+incompatible
 	github.com/Microsoft/hcsshim v0.8.6 // indirect
 	github.com/Shopify/sarama v1.27.2
